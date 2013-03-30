@@ -1,0 +1,98 @@
+@charset "UTF-8";
+
+
+/* ==== Scroll down to find where to put your styles :) ==== */
+
+
+body { 
+    font-family: Helvetica, Arial, sans-serif; 
+
+    margin: 0;
+    padding: 0;
+    background: #cccccc;
+}
+
+/*
+    // ========================================== \\
+   ||                                              ||
+   ||               Your styles !                  ||
+   ||                                              ||
+    \\ ========================================== //
+*/
+
+
+
+body {
+   }
+p { margin-bottom: 1em; }
+a { text-decoration: none; }
+
+
+#header {
+    /*
+    top:0px;
+    left:0px;
+    height:60px;
+    background-color:#ffff00;
+     */
+
+}
+
+#container {
+	width: 1024px;
+    height:768px;
+    left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	margin: 0px;
+	border: 0px;
+}
+#content {
+	width:1024px;
+	margin: 0 auto;
+	padding-top: 0px;
+	height:768px;
+	position:absolute;
+    float:left;
+    
+
+}
+
+
+#interface{
+    /*
+    width:400px;
+    background-color:#666666;
+	margin: 0 auto;
+	height:25px;
+
+     */
+    margin-top:500px;
+    float:left;
+    
+    
+}
+#interface li{
+    display: inline;
+    list-style-type: none;
+    float:left;
+    padding-right:50px;
+}
+/* this accellerates rendering for some reason */
+#canvas {
+    
+    -webkit-transform: translate3d(0,0,0); 
+}
+
+
+/* INTERFACE STYLES */
+
+
+
+#footer {
+	clear: both;
+}
+
+/* INPUT STYLES */
+

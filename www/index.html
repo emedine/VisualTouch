@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <title></title>
+  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no;" />
+	<meta charset="utf-8">
+
+
+	<!-- iPad/iPhone specific css below, add after your main css >
+	<link rel="stylesheet" media="only screen and (max-device-width: 1024px)" href="ipad.css" type="text/css" />		
+	<link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="iphone.css" type="text/css" />		
+	-->
+	<!-- If your application is targeting iOS BEFORE 4.0 you MUST put json2.js from http://www.JSON.org/json2.js into your www directory and include it here -->
+	<script type="text/javascript" charset="utf-8" src="cordova-1.7.0.js"></script>
+    <!-- processing library -->
+    <script src="js/processing-1.4.1.js" type="text/javascript"></script>
+    <!-- jquery library -->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <!-- color picker -->
+    <script type="text/javascript" src="js/farbtastic.js"></script>
+        
+    <!-- jquery mobile  !-->
+    <script src="js/jquery.mobile-1.2.0.min.js"></script>
+    <!-- YUI Libraries 
+    <script src="js/yui.js"></script>
+     -->
+        
+           
+    <!-- MAIN JAVASCRIPT FUNCTIONS -->
+    <script type="text/javascript">
+        
+	// If you want to prevent dragging, uncomment this section
+	/*
+	function preventBehavior(e) 
+	{ 
+      e.preventDefault(); 
+    };
+	document.addEventListener("touchmove", preventBehavior, false);
+	*/
+	
+	/* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+	see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+	for more details -jm */
+	/*
+	function handleOpenURL(url)
+	{
+		// TODO: do something with the url passed in.
+	}
+	*/
+	
+	function onBodyLoad()
+	{		
+		document.addEventListener("deviceready", onDeviceReady, false);
+        consoloe.log("device ready");
+	}
+	
+	/* When this function is called, Cordova has been initialized and is ready to roll */
+	/* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
+	see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
+	for more details -jm */
+	function onDeviceReady()
+	{
+		// do your thing!
+		/// navigator.notification.alert("Hello LPM")
+	}
+        
+        var processingInstance;
+        
+        
+        //// GRAVITY CHANGE FUNCTIONS ///////////
+        //*
+        function updateGravity(theGrav){
+            console.log("SLIDER: " + theGrav);
+            processingInstance = Processing.getInstanceById('sketch');
+            processingInstance.changeGravity(theGrav);
+            
+            
+        }
+        / */
+        
+        //// COLOR CHANGE FUNCTIONS ///////////
+        function changeBackgroundColor(hexColor){
+            // console.log("INIT BG COLOR CHANGE:  " + hexColor);
+            Processing.getInstanceById('sketch').changeBGColor(hexColor);
+            
+            bgColorConfig = hexColor;
+            
+        }
+        
+        /// SPAWN SLIDER
+        function updateSpawns(newValue){
+            console.log("UPDATING SLIDER: " + newValue);
+            processingInstance = Processing.getInstanceById('sketch');
+            processingInstance.changeSpawns(newValue);
+            
+            // animSpeedConfig = newValue;
+        }
+    
+    </script>
+
+        
+        
+    <!-- COLOR PICKER CODE !-->
+        
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+                              $('#color_picker').hide();
+                              var f = $.farbtastic('#picker');
+                              var p = $('#picker');
+                              var selected;
+                              $('.colorwell')
+                              .each(function () { f.linkTo(this); $(this).css('opacity', .5); })
+                              .focus(function() {
+                                     /// handle button highlights
+                                     if (selected) {
+                                     $(selected).css('opacity', .5).removeClass('colorwell-selected');
+                                     }
+                                     f.linkTo(this);
+                                     p.css('opacity', 1);
+                                     $(selected = this).css('opacity', 1).addClass('colorwell-selected');
+                                     });
+                              $(selected = "#color2").css('opacity', 1).addClass('colorwell-selected');
+                              });
+            </script>
+        
+        <!-- end color picker code -->
+        
+        
+        <!-- CSS STYLE -->
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        <!-- color picker style -->
+        <link rel="stylesheet" href="css/farbtastic.css" type="text/css" />
+        
+        <!-- jquery mobile css !-->
+        <link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.2.0.css" />
+            
+        <!-- YUI STYLES -->
+            <!-- THIS DOES NOTHING -->
+        <!-- <link type="text/css" rel="stylesheet" href="css/dial-core.css" /> 
+        <link type="text/css" rel="stylesheet" href="css/dial-skin.css" />-->
+        
+  </head>
+  <body style="margin:0;">
+	
+      
+<div id="container">
+        
+    <div id="content">
+        
+    <!-- start processing code -->
+    <script type="text/processing">
+	
+        int tWidth = 1024;
+        int tHeight = 768;
+        int totalMovers = 5;
+        
+        //
+        color tFontColor;
+        
+        float gravWeight = -5;
+        
+        // ArrayList movers;
+        ArrayList<Mover> movers;
+        
+        movers = new ArrayList();
+        
+        // Mover[] movers  = new Mover[totalMovers];
+        Attractor a;
+        //
+        PVector wind = new PVector(0.01,0);
+        PVector gravity = new PVector(0,0.01);
+        //
+        
+        void setup(){
+            size(tWidth, tHeight);
+            colorMode(RGB);
+            smooth();
+            
+            spawnMovers();
+            // generate attractor
+            console.log("INIT");
+            
+            a = new Attractor(gravWeight);
+        }
+        
+        void draw(){
+            /// do bg color
+            fill(0,0,0,17);
+            strokeWeight(0);
+            noStroke();
+            rect(0,0,tWidth,tHeight);
+            for (int i=0; i< movers.size(); i++){
+                Mover dMover = movers.get(i);
+                /// movers[i].applyForce(gravity);
+                PVector f = a.attract(dMover);
+                dMover.applyForce(f);
+                dMover.update();
+                dMover.checkEdges();
+                dMover.display();
+            }
+            
+            a.display();
+        }
+        /// spawn movers
+        void spawnMovers(){
+            // generate movers
+            movers.clear();
+            for (int i=0; i< totalMovers; i++){
+                console.log("ADDING MOVER: " + i);
+                // movers[i] = new Mover(random(0.1,5),0,0);
+                
+                movers.add(new Mover(random(0.1,5),0,0));
+                
+            }
+            
+        }
+        
+        void changeGravity(theGrav){
+            
+            gravWeight = map(theGrav, -200,200,-10,10);
+            a.G = gravWeight;
+            console.log("GRAV: " + theGrav + " NEW: " + gravWeight);
+        }
+        //
+        void changeSpawns(theValue){
+            totalMovers = int(map(theValue, 1, 400, 1, 20));
+            spawnMovers();
+            console.log(totalMovers);
+            
+        }
+        
+        ////
+        void changeBGColor(int theColor){
+            //// change font color
+            string dColor = theColor.substring(1);
+            color newColor = unhex("FF" + dColor);
+            tFontColor = newColor;
+        }
+        
+        /////// ATTRACTOR OBJECT CLASS //////////
+        class Attractor{
+            float mass;
+            PVector location;
+            float G;
+            
+            Attractor(float theG){
+                location = new PVector(width/2, height/2);
+                mass = 20;
+                G = theG;
+            }
+            
+            // returns it attraction
+            PVector attract(Mover m){
+                PVector force = PVector.sub(location, m.location);
+                float distance = force.mag();
+                distance = constrain(distance, 5.0, 25.0);
+                
+                force.normalize();
+                float strength = (G * mass * m.mass) / (distance * distance);
+                force.mult(strength);
+                return force;
+            }  
+            
+            //
+            void display(){
+                fill(0,165,0,17);
+                strokeWeight(3);
+                fill(0,165,0,65);
+                ellipse(location.x, location.y, mass, mass);
+            }
+            
+        }
+        
+        
+        //// end attractor class
+
+        /////// MOVER OBJECT CLASS //////////
+        
+        class Mover{
+            PVector location;
+            PVector velocity;
+            PVector acceleration;
+            PVector wind;
+            PVector gravity;
+            
+            float mass;
+            int ballSize = 16;
+            
+            /// the mass, the x, the y);
+            Mover(float m, float x, float y){
+                mass = m;
+                location = new PVector(random(width), random(height));
+                velocity = new PVector(random(-2,2),random(-2,2));
+                acceleration = new PVector(0.1,0.2);
+                
+            }
+            
+            /// force
+            void applyForce(PVector force){
+                PVector f = PVector.div(force,mass);
+                acceleration.add(f);
+                
+            }
+            
+            void update(){
+                velocity.add(acceleration);
+                location.add(velocity);
+                acceleration.mult(0);
+            }
+            
+            
+            
+            void checkEdges(){
+                if(location.x>width){
+                    location.x = width;
+                    velocity.x *= -1;
+                } else if (location.x<0){
+                    velocity.x *= -1;
+                    location.x = 0;
+                }
+                
+                if(location.y>height){
+                    velocity.y *= -1;
+                    location.y = height;
+                } else if (location.y<0){
+                    location.y = 0;
+                    velocity.y *=-1;
+                }
+                
+            }
+            void display(){
+                stroke(tFontColor,200);
+                strokeWeight(4);
+                fill(0,0,0,165);
+                
+                ellipse(location.x, location.y, mass*ballSize, mass*ballSize);
+                
+            }
+            
+        }
+        /// end mover class
+        
+        
+      </script>
+      <canvas id="sketch">
+      </canvas>
+        </div>
+        
+         <!-- end content class -->
+
+        <div id="interface">
+            <ul>
+            <li>
+            <!-- color picker -->
+                <div id="color_picker" style="color: red; font-size: 1.4em"></div>
+                    <form action="">
+                    <div id="picker" style="float: left;"></div>
+                    <div class="form-item" id="form-item">
+                    <input type="text" id="color2" name="color2" class="colorwell" value="#121256" readonly="true" style="width:170px"/>
+                    </div>
+                    </form>
+                </li>
+                <li style="width:250px;">
+                    <!-- <div id ="GravityDial" class="yui3-skin-sam"></div> -->
+                    <input type="range" class="gravitySlider" min="-200" max="200" value="0" step="1" onchange="updateGravity(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                </li>
+                <li style="width:250px;">
+                    <input type="range" class="spawnSlider" min="0" max="400" value="10" step="1" onchange="updateSpawns(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                    </li>
+            </ul>
+            <!--  end interface -->
+            
+        </div>
+  
+
+     
+   <!-- end container class -->
+   </div>
+    
+  </body>
+</html>
+
+<!-- YUI SANDBOX
+
+<script>
+    
+    ///// YUI CALLOUTS
+    updateGravity = function(e) {
+        // console.log("DIAL: : " +e.newVal);
+    var processingInstance = Processing.getInstanceById('sketch');
+    processingInstance.changeGravity(e.newVal);
+       //  Y.one('#scene').setStyle('top', (originY + (e.newVal * 10)) + 'px');
+    }
+    // Create a YUI sandbox on your page.
+    YUI({ filter: 'raw' }).use("dial", function(Y) {
+                               
+            var dial = new Y.Dial({
+                    min:0,
+                    max:360,
+                    stepsPerRev:1,
+                    diameter:155,
+                    value: 5,
+                    after : {
+                            valueChange: Y.bind( updateGravity, dial )
+                        }
+                    });
+                    dial.set('strings',{'label':'GRAVITY:', 'resetStr':'Off'});
+                               
+                    dial.render("#GravityDial");                                
+                                                             
+    });
+
+    </script>
+ 
+  -->
+

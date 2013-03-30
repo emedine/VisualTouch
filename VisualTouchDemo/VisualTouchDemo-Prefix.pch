@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'VisualTouchDemo' target in the 'VisualTouchDemo' project
+//
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+#endif
