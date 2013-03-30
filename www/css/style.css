@@ -91,15 +91,20 @@ a { text-decoration: none; }
     
     margin-right:50px;
 }
+#colorPickerRight{
+    position:absolute;
+    left:810px;
+    top:0px;
+}
 #sliderHolder {
     position:absolute;
-    list-style-type: none;
-    left:175px;
+
     top:75px;
     margin:0px;
 }
 #sliderHolder li{
-    margin-top:20px; 
+    margin-top:20px;
+    list-style-type: none;
 }
 
 /* this accellerates rendering for some reason */

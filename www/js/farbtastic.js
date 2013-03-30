@@ -273,13 +273,15 @@ jQuery._farbtastic = function (container, callback) {
       $(fb.callback).each(function() {
         if (this.value && this.value != fb.color) {
           this.value = fb.color;
-            
+          
+        ////////////////////////
         ////PASS THE COLOR VALUE to the DOCUMENT
+        ////////////////////////
             if(this.id == "color1"){
-                $(document).click(changeFontColor(this.value));
+                $(document).click(doTrimColor(this.value));
                           
             } else if(this.id == "color2"){
-                $(document).click(changeBackgroundColor(this.value));
+                $(document).click(doBackgroundColor(this.value));
                           
             }
 

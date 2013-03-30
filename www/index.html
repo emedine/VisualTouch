@@ -22,11 +22,7 @@
         
     <!-- jquery mobile  !-->
     <script src="js/jquery.mobile-1.2.0.min.js"></script>
-    <!-- YUI Libraries 
-    <script src="js/yui.js"></script>
-     -->
-        
-           
+
     <!-- MAIN JAVASCRIPT FUNCTIONS -->
     <script type="text/javascript">
         
@@ -80,13 +76,22 @@
         / */
         
         //// COLOR CHANGE FUNCTIONS ///////////
-        function changeBackgroundColor(hexColor){
+        ///*
+        function doTrimColor(hexColor){
             // console.log("INIT BG COLOR CHANGE:  " + hexColor);
-            Processing.getInstanceById('sketch').changeBGColor(hexColor);
+            Processing.getInstanceById('sketch').changeTrimColor(hexColor);
             
             bgColorConfig = hexColor;
             
         }
+        function doBackgroundColor(hexColor){
+            // console.log("INIT BG COLOR CHANGE:  " + hexColor);
+            Processing.getInstanceById('sketch').changeTrimColor(hexColor);
+            
+            bgColorConfig = hexColor;
+            
+        }
+         //*/
         
         /// SPAWN SLIDER
         function updateSpawns(newValue){
@@ -104,6 +109,7 @@
     <!-- COLOR PICKER CODE !-->
         
         <script type="text/javascript" charset="utf-8">
+            /// color picker 1
             $(document).ready(function() {
                               $('#color_picker').hide();
                               var f = $.farbtastic('#picker');
@@ -120,8 +126,28 @@
                                      p.css('opacity', 1);
                                      $(selected = this).css('opacity', 1).addClass('colorwell-selected');
                                      });
+                              $(selected = "#color1").css('opacity', 1).addClass('colorwell-selected');
+                              });
+            /// color picker 2
+            $(document).ready(function() {
+                              $('#color_picker').hide();
+                              var f = $.farbtastic('#picker2');
+                              var p = $('#picker2');
+                              var selected;
+                              $('.colorwell')
+                              .each(function () { f.linkTo(this); $(this).css('opacity', .5); })
+                              .focus(function() {
+                                     /// handle button highlights
+                                     if (selected) {
+                                     $(selected).css('opacity', .5).removeClass('colorwell-selected');
+                                     }
+                                     f.linkTo(this);
+                                     p.css('opacity', 1);
+                                     $(selected = this).css('opacity', 1).addClass('colorwell-selected');
+                                     });
                               $(selected = "#color2").css('opacity', 1).addClass('colorwell-selected');
                               });
+
             </script>
         
         <!-- end color picker code -->
@@ -231,7 +257,7 @@
         }
         
         ////
-        void changeBGColor(int theColor){
+        void changeTrimColor(int theColor){
             //// change font color
             string dColor = theColor.substring(1);
             color newColor = unhex("FF" + dColor);
@@ -352,16 +378,15 @@
         <div id="interface">
             <!-- left color picker -->
             <div id="colorPickerLeft" style="width: 200px;">
-                <div id="color_picker" style="color: red; font-size: 1.4em"></div>
-                    <form action="">
+
+                <form action="">
                     <div id="picker" style="float: left;"></div>
                     <div class="form-item" id="form-item">
-                    <input type="text" id="color2" name="color2" class="colorwell" value="#FFFFFF" readonly="true" style="width:170px"/>
-                    
-                    </form>
-                </div>
+                    <input type="text" id="color1" name="color1" class="colorwell" value="#FFFFFF" readonly="true" style="width:170px"/>
+                    </div>
+                </form>
             </div>
-            <div id="sliderHolder" >
+            <div id="sliderHolder" style="left:175px;">
             <!-- left slider list -->
                 <ul>
                 <li style="width:250px;">
@@ -373,12 +398,35 @@
                 </li>
                 </ul>
             </div>
+            <div id="sliderHolder" style="left:550px;" >
+                <!-- right slider list -->
+                <ul>
+                    <li style="width:250px;">
+                        <!-- <div id ="GravityDial" class="yui3-skin-sam"></div> -->
+                        <input type="range" class="gravitySlider1" min="-200" max="200" value="0" step="1" onchange="updateGravity(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                    </li>
+                    <li style="width:250px;">
+                        <input type="range" class="spawnSlider1" min="0" max="400" value="50" step="1" onchange="updateSpawns(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- right color picker -->
+            <div id="colorPickerRight" style="width: 200px;">
+                
+                <form action="">
+                    <div id="picker2" style="float: left;"></div>
+                    <div class="form-item" id="form-item">
+                        <input type="text" id="color2" name="color2" class="colorwell" value="#FFFFFF" readonly="true" style="width:170px"/>
+                    </div>
+                </form>
+            </div>
 
 
             <!--  end interface -->
-            
+    
         </div>
-  
+      
 
     
    <!-- end container class -->
@@ -387,37 +435,4 @@
   </body>
 </html>
 
-<!-- YUI SANDBOX
-
-<script>
-    
-    ///// YUI CALLOUTS
-    updateGravity = function(e) {
-        // console.log("DIAL: : " +e.newVal);
-    var processingInstance = Processing.getInstanceById('sketch');
-    processingInstance.changeGravity(e.newVal);
-       //  Y.one('#scene').setStyle('top', (originY + (e.newVal * 10)) + 'px');
-    }
-    // Create a YUI sandbox on your page.
-    YUI({ filter: 'raw' }).use("dial", function(Y) {
-                               
-            var dial = new Y.Dial({
-                    min:0,
-                    max:360,
-                    stepsPerRev:1,
-                    diameter:155,
-                    value: 5,
-                    after : {
-                            valueChange: Y.bind( updateGravity, dial )
-                        }
-                    });
-                    dial.set('strings',{'label':'GRAVITY:', 'resetStr':'Off'});
-                               
-                    dial.render("#GravityDial");                                
-                                                             
-    });
-
-    </script>
- 
-  -->
 
