@@ -18,7 +18,7 @@
     <!-- jquery library -->
     <script type="text/javascript" src="js/jquery.js"></script>
     <!-- color picker -->
-    <script type="text/javascript" src="js/farbtastic.js"></script>
+    <script type="text/javascript" src="js/jquery.minicolors.js"></script>
         
     <!-- jquery mobile  !-->
     <script src="js/jquery.mobile-1.2.0.min.js"></script>
@@ -64,16 +64,7 @@
         var processingInstance;
         
         
-        //// GRAVITY CHANGE FUNCTIONS ///////////
-        //*
-        function updateGravity(theGrav){
-            console.log("SLIDER: " + theGrav);
-            processingInstance = Processing.getInstanceById('sketch');
-            processingInstance.changeGravity(theGrav);
-            
-            
-        }
-        / */
+
         
         //// COLOR CHANGE FUNCTIONS ///////////
         ///*
@@ -86,20 +77,42 @@
         }
         function doBackgroundColor(hexColor){
             // console.log("INIT BG COLOR CHANGE:  " + hexColor);
-            Processing.getInstanceById('sketch').changeTrimColor(hexColor);
+            Processing.getInstanceById('sketch').changeBgColor(hexColor);
             
             bgColorConfig = hexColor;
             
         }
          //*/
         
-        /// SPAWN SLIDER
+        /// SLIDER FUNCTIONS //////////
+        
         function updateSpawns(newValue){
             console.log("UPDATING SLIDER: " + newValue);
             processingInstance = Processing.getInstanceById('sketch');
             processingInstance.changeSpawns(newValue);
             
             // animSpeedConfig = newValue;
+        }
+        
+        function updateGravity(theGrav){
+            console.log("SLIDER: " + theGrav);
+            processingInstance = Processing.getInstanceById('sketch');
+            processingInstance.changeGravity(theGrav);  
+            
+        }
+        function updateSineHeight(theH){
+            console.log("height SLIDER: " + theH);
+            processingInstance = Processing.getInstanceById('sketch');
+            processingInstance.changeSineHeight(theH);
+            
+            
+        }
+        function updateSineSpeed(theS){
+            console.log("Speed SLIDER: " + theS);
+            processingInstance = Processing.getInstanceById('sketch');
+            processingInstance.changeSineSpeed(theS);
+            
+            
         }
     
     </script>
@@ -109,46 +122,30 @@
     <!-- COLOR PICKER CODE !-->
         
         <script type="text/javascript" charset="utf-8">
-            /// color picker 1
-            $(document).ready(function() {
-                              $('#color_picker').hide();
-                              var f = $.farbtastic('#picker');
-                              var p = $('#picker');
-                              var selected;
-                              $('.colorwell')
-                              .each(function () { f.linkTo(this); $(this).css('opacity', .5); })
-                              .focus(function() {
-                                     /// handle button highlights
-                                     if (selected) {
-                                     $(selected).css('opacity', .5).removeClass('colorwell-selected');
-                                     }
-                                     f.linkTo(this);
-                                     p.css('opacity', 1);
-                                     $(selected = this).css('opacity', 1).addClass('colorwell-selected');
-                                     });
-                              $(selected = "#color1").css('opacity', 1).addClass('colorwell-selected');
-                              });
-            /// color picker 2
-            $(document).ready(function() {
-                              $('#color_picker').hide();
-                              var f = $.farbtastic('#picker2');
-                              var p = $('#picker2');
-                              var selected;
-                              $('.colorwell')
-                              .each(function () { f.linkTo(this); $(this).css('opacity', .5); })
-                              .focus(function() {
-                                     /// handle button highlights
-                                     if (selected) {
-                                     $(selected).css('opacity', .5).removeClass('colorwell-selected');
-                                     }
-                                     f.linkTo(this);
-                                     p.css('opacity', 1);
-                                     $(selected = this).css('opacity', 1).addClass('colorwell-selected');
-                                     });
-                              $(selected = "#color2").css('opacity', 1).addClass('colorwell-selected');
-                              });
 
-            </script>
+            $(document).ready( function() {
+                              
+            var consoleTimeout;
+            $("#cp1").minicolors({
+                                                    
+                    textfield: $(this).hasClass('no-textfield'),
+                                    inline: true,               
+                                    change: function(hex, opacity) {
+                                        doTrimColor(hex);
+                                        }
+                                    });
+            $("#cp2").minicolors({
+                                                                
+                     textfield: $(this).hasClass('no-textfield'),
+                                     inline: true,
+                                     change: function(hex, opacity) {
+                                        doBackgroundColor(hex);
+                                        }
+                                     });
+            
+            });
+
+        </script>
         
         <!-- end color picker code -->
         
@@ -156,16 +153,12 @@
         <!-- CSS STYLE -->
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <!-- color picker style -->
-        <link rel="stylesheet" href="css/farbtastic.css" type="text/css" />
+        <link rel="stylesheet" href="css/jquery.minicolors.css" type="text/css" />
         
         <!-- jquery mobile css !-->
         <link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.2.0.css" />
             
-        <!-- YUI STYLES -->
-            <!-- THIS DOES NOTHING -->
-        <!-- <link type="text/css" rel="stylesheet" href="css/dial-core.css" /> 
-        <link type="text/css" rel="stylesheet" href="css/dial-skin.css" />-->
-        
+                
   </head>
   <body style="margin:0;">
 	
@@ -180,15 +173,21 @@
         int tWidth = 1024;
         int tHeight = 768;
         int totalMovers = 5;
+        int totalSines = 2;
         
         //
-        color tFontColor = color(255);
+        color trimColor = color(255);
+        color bgColor = color(0);
         
         float gravWeight = -5;
         
         // ArrayList movers;
         ArrayList<Mover> movers;
+        ArrayList<TLine> lines;
+        ArrayList<SineWave> tsines;
         
+        tsines = new ArrayList();
+        lines = new ArrayList();
         movers = new ArrayList();
         
         // Mover[] movers  = new Mover[totalMovers];
@@ -204,6 +203,8 @@
             smooth();
             
             spawnMovers();
+            spawnSines();
+            // spawnLines();
             // generate attractor
             console.log("INIT");
             
@@ -216,17 +217,26 @@
             strokeWeight(0);
             noStroke();
             rect(0,0,tWidth,tHeight);
-            for (int i=0; i< movers.size(); i++){
-                Mover dMover = movers.get(i);
-                /// movers[i].applyForce(gravity);
-                PVector f = a.attract(dMover);
-                dMover.applyForce(f);
-                dMover.update();
-                dMover.checkEdges();
-                dMover.display();
+            drawMovers();
+            drawSines();
+            // drawLines();
+            /// shows the "attractor"
+            a.display();
+        }
+        
+        
+        ////// INITIAL PARAMS ///////////
+        
+        void spawnSines(){
+            for (int i=0; i< totalSines; i++){
+                tsines.add(new SineWave());
             }
             
-            a.display();
+        }
+        void spawnLines(){
+            for (int i=0; i< totalMovers; i++){
+                lines.add(new TLine(10, random(0.1,5),500,i * 10));  
+            } 
         }
         /// spawn movers
         void spawnMovers(){
@@ -242,13 +252,44 @@
             
         }
         
+        /////// DRAW OBJEXTS ///////////
+        void drawSines(){
+            for (int i=0; i< tsines.size(); i++){
+                SineWave dsine = tsines.get(i);
+                dsine.display();
+            }
+            
+        }
+        void drawMovers(){
+            
+            for (int i=0; i< movers.size(); i++){
+                Mover dMover = movers.get(i);
+                /// movers[i].applyForce(gravity);
+                PVector f = a.attract(dMover);
+                dMover.applyForce(f);
+                dMover.update();
+                dMover.checkEdges();
+                dMover.display();
+            }
+        }
+        void drawLines(){
+            
+            for (int i=0; i< lines.size(); i++){
+                TLine tline = lines.get(i);
+                /// movers[i].applyForce(gravity);
+                tline.display();
+            }
+        }
+
+
+        //// MOVEMENT PARAMS
         void changeGravity(theGrav){
             
             gravWeight = map(theGrav, -200,200,-10,10);
             a.G = gravWeight;
             console.log("GRAV: " + theGrav + " NEW: " + gravWeight);
         }
-        //
+        // SPAWN PARAMS
         void changeSpawns(theValue){
             totalMovers = int(map(theValue, 1, 400, 1, 20));
             spawnMovers();
@@ -256,15 +297,41 @@
             
         }
         
-        ////
+        void changeSineHeight(theH){
+            for (int i=0; i< tsines.size(); i++){
+                SineWave dsine = tsines.get(i);
+                dsine.amplitude = map(theH, -200, 200, 0, 250);
+               
+            }
+            
+            
+        }
+        void changeSineSpeed(theS){
+            for (int i=0; i< tsines.size(); i++){
+                SineWave dsine = tsines.get(i);
+                //// dsine.period = map(theS, -200,200, 0, 800); ///this changes the spacing
+                dsine.theta = map(theS, -200,200, 0.00, .99);
+            }
+            
+            
+        }
+        
+        //// DISPLAY PARAMS
         void changeTrimColor(int theColor){
             //// change font color
             string dColor = theColor.substring(1);
             color newColor = unhex("FF" + dColor);
-            tFontColor = newColor;
+            trimColor = newColor;
         }
-        
+        void changeBgColor(int theColor){
+            //// change font color
+            string dColor = theColor.substring(1);
+            color newColor = unhex("FF" + dColor);
+            bgColor = newColor;
+        }
+        ///////////////////////////////////////
         /////// ATTRACTOR OBJECT CLASS //////////
+        ///////////////////////////////////////
         class Attractor{
             float mass;
             PVector location;
@@ -290,9 +357,9 @@
             
             //
             void display(){
-                fill(0,165,0,17);
-                strokeWeight(3);
-                fill(0,165,0,65);
+                fill(0,0,0,0);
+                strokeWeight(1);
+                stroke(color(trimColor, 65),200);
                 ellipse(location.x, location.y, mass, mass);
             }
             
@@ -300,9 +367,110 @@
         
         
         //// end attractor class
-
-        /////// MOVER OBJECT CLASS //////////
         
+                ///////////////////////////////////////
+        //////// SINE WAVE OBJECT CLASS /////////
+            ///////////////////////////////////////
+        
+        class SineWave{
+            ///*
+             int xspacing = 16;   // How far apart should each horizontal location be spaced
+             int w;              // Width of entire wave
+             
+             float theta = 0.02;
+             float thetaBase = 0.0; // Start angle at 0
+             float amplitude = 125.0;  // Height of wave
+             float period = 800.0;  // How many pixels before the wave repeats
+             float dx;  // Value for incrementing X, a function of period and xspacing
+             float[] yvalues;  // Using an array to store height values for the wave
+             //*/
+            
+            SineWave(){
+                
+                 w = 1024+16;
+                 dx = (TWO_PI / period) * xspacing;
+                 yvalues = new float[w/xspacing];
+                 
+            }
+            
+            void update(float tAmp, float tPer){
+                amplitude = map(tAmp, -200, 200, 0, 250);
+                period = map(tPer, -200,200, 0, 1200);
+                
+                
+            }
+            
+            
+            void display() {
+              dx = (TWO_PI / period) * xspacing;
+              yvalues = new float[w/xspacing];
+                
+
+             calcWave();
+             renderWave();
+             }
+             
+             void calcWave() {
+             // Increment theta (try different values for 'angular velocity' here
+             // thetaBase += 0.02;
+             thetaBase += theta;
+             // For every x value, calculate a y value with sine function
+             float x = thetaBase;
+             for (int i = 0; i < yvalues.length; i++) {
+             yvalues[i] = sin(x)*amplitude;
+             x+=dx;
+             }
+             }
+             
+             void renderWave() {
+             fill(0,0,0,0);
+             strokeWeight(1);
+             stroke(bgColor,200);
+             // A simple way to draw the wave with an ellipse at each location
+             for (int x = 0; x < yvalues.length; x++) {
+             ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
+             }
+             }
+            
+            
+        }
+
+        ///////////////////////////////////////
+        /////// LINE OBJECT CLASS //////////
+        ///////////////////////////////////////
+        class TLine{
+            float lWidth;
+            float lHeight;
+            float posX;
+            float posY;
+            
+            TLine(float lw, float lh, float px, float py){
+                lWidth = lw;
+                lHeight = lh;
+                posX = px;
+                posY = py;
+                
+            }
+            void initLine(){
+                
+                
+            }
+            void display(){
+                fill(0);
+                strokeWeight(1);
+                stroke(bgColor,200);
+                rect(posX, posY, lWidth, lHeight);
+                
+                
+            }
+            // end class
+        }
+        
+        //// end line class
+        
+        ///////////////////////////////////////
+        /////// MOVER OBJECT CLASS //////////
+        ///////////////////////////////////////
         class Mover{
             PVector location;
             PVector velocity;
@@ -356,7 +524,7 @@
                 
             }
             void display(){
-                stroke(tFontColor,200);
+                stroke(trimColor,200);
                 strokeWeight(4);
                 fill(0,0,0,165);
                 
@@ -377,15 +545,12 @@
 
         <div id="interface">
             <!-- left color picker -->
-            <div id="colorPickerLeft" style="width: 200px;">
-
-                <form action="">
-                    <div id="picker" style="float: left;"></div>
-                    <div class="form-item" id="form-item">
-                    <input type="text" id="color1" name="color1" class="colorwell" value="#FFFFFF" readonly="true" style="width:170px"/>
-                    </div>
-                </form>
+            <div id="colorPickerLeft">
+            <div id="cp1">
+                <input class="minicolors inline" data-control="saturation" type="text" value="#50c900">
             </div>
+            </div>
+            
             <div id="sliderHolder" style="left:175px;">
             <!-- left slider list -->
                 <ul>
@@ -398,28 +563,24 @@
                 </li>
                 </ul>
             </div>
-            <div id="sliderHolder" style="left:550px;" >
+            <div id="sliderHolder" style="left:560px;" >
                 <!-- right slider list -->
                 <ul>
                     <li style="width:250px;">
                         <!-- <div id ="GravityDial" class="yui3-skin-sam"></div> -->
-                        <input type="range" class="gravitySlider1" min="-200" max="200" value="0" step="1" onchange="updateGravity(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                        <input type="range" class="gravitySlider1" min="-200" max="200" value="50" step="1" onchange="updateSineHeight(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
                     </li>
                     <li style="width:250px;">
-                        <input type="range" class="spawnSlider1" min="0" max="400" value="50" step="1" onchange="updateSpawns(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                        <input type="range" class="spawnSlider1" min="-200" max="200" value="50" step="1" onchange="updateSineSpeed(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
                     </li>
                 </ul>
             </div>
 
             <!-- right color picker -->
-            <div id="colorPickerRight" style="width: 200px;">
-                
-                <form action="">
-                    <div id="picker2" style="float: left;"></div>
-                    <div class="form-item" id="form-item">
-                        <input type="text" id="color2" name="color2" class="colorwell" value="#FFFFFF" readonly="true" style="width:170px"/>
-                    </div>
-                </form>
+            <div id="colorPickerRight">
+            <div id="cp2">
+                 <input class="minicolors inline" data-control="saturation" type="text" value="#50c900">
+            </div>
             </div>
 
 
