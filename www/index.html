@@ -156,7 +156,7 @@
         int totalMovers = 5;
         
         //
-        color tFontColor;
+        color tFontColor = color(255);
         
         float gravWeight = -5;
         
@@ -350,31 +350,37 @@
          <!-- end content class -->
 
         <div id="interface">
-            <ul>
-            <li>
-            <!-- color picker -->
+            <!-- left color picker -->
+            <div id="colorPickerLeft" style="width: 200px;">
                 <div id="color_picker" style="color: red; font-size: 1.4em"></div>
                     <form action="">
                     <div id="picker" style="float: left;"></div>
                     <div class="form-item" id="form-item">
-                    <input type="text" id="color2" name="color2" class="colorwell" value="#121256" readonly="true" style="width:170px"/>
-                    </div>
+                    <input type="text" id="color2" name="color2" class="colorwell" value="#FFFFFF" readonly="true" style="width:170px"/>
+                    
                     </form>
-                </li>
+                </div>
+            </div>
+            <div id="sliderHolder" >
+            <!-- left slider list -->
+                <ul>
                 <li style="width:250px;">
                     <!-- <div id ="GravityDial" class="yui3-skin-sam"></div> -->
                     <input type="range" class="gravitySlider" min="-200" max="200" value="0" step="1" onchange="updateGravity(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
                 </li>
                 <li style="width:250px;">
-                    <input type="range" class="spawnSlider" min="0" max="400" value="10" step="1" onchange="updateSpawns(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
-                    </li>
-            </ul>
+                    <input type="range" class="spawnSlider" min="0" max="400" value="50" step="1" onchange="updateSpawns(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
+                </li>
+                </ul>
+            </div>
+
+
             <!--  end interface -->
             
         </div>
   
 
-     
+    
    <!-- end container class -->
    </div>
     

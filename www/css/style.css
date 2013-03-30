@@ -47,6 +47,8 @@ a { text-decoration: none; }
 	bottom: 0px;
 	margin: 0px;
 	border: 0px;
+    overflow:hidden;
+
 }
 #content {
 	width:1024px;
@@ -56,29 +58,50 @@ a { text-decoration: none; }
 	position:absolute;
     float:left;
     
+    
 
 }
 
 
 #interface{
     /*
-    width:400px;
-    background-color:#666666;
-	margin: 0 auto;
-	height:25px;
+     width:1004px;
+     margin: 0 auto;
+     height:350px;
+     position:absolute;
+     top:418px;
+     left:20px;
+     background: url('../images/interface_bground.png') no-repeat;
 
      */
-    margin-top:500px;
+    background: url('../images/interface_bg.png') no-repeat;
+    position:absolute;
+    width:1024px;
+    top:592px;
+    height:300px;
     float:left;
     
     
 }
+
 #interface li{
-    display: inline;
-    list-style-type: none;
-    float:left;
-    padding-right:50px;
+
 }
+#colorPickerLeft{
+    
+    margin-right:50px;
+}
+#sliderHolder {
+    position:absolute;
+    list-style-type: none;
+    left:175px;
+    top:75px;
+    margin:0px;
+}
+#sliderHolder li{
+    margin-top:20px; 
+}
+
 /* this accellerates rendering for some reason */
 #canvas {
     
