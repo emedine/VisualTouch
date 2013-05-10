@@ -51,14 +51,11 @@ a { text-decoration: none; }
 
 }
 #content {
-	width:1024px;
 	margin: 0 auto;
 	padding-top: 0px;
-	height:768px;
-	position:absolute;
+	position:relative;
     float:left;
-    
-    
+    overflow:hidden;
 
 }
 
@@ -87,6 +84,12 @@ a { text-decoration: none; }
 #interface li{
 
 }
+#closeButton{
+    
+    left:450px;
+    top:70px;
+    position:absolute;
+}
 #colorPickerLeft{
     position:absolute;
     left:20px;
@@ -113,7 +116,8 @@ a { text-decoration: none; }
 /* this accellerates rendering for some reason */
 #canvas {
     
-    -webkit-transform: translate3d(0,0,0); 
+    -webkit-transform: translate3d(0,0,0);
+
 }
 
 

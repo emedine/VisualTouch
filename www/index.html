@@ -19,9 +19,10 @@
     <script type="text/javascript" src="js/jquery.js"></script>
     <!-- color picker -->
     <script type="text/javascript" src="js/jquery.minicolors.js"></script>
-        
     <!-- jquery mobile  !-->
     <script src="js/jquery.mobile-1.2.0.min.js"></script>
+        <!-- jquery touchswipe !-->
+        <script src="js/jquery.touchSwipe-1.2.5.js"></script>
 
     <!-- MAIN JAVASCRIPT FUNCTIONS -->
     <script type="text/javascript">
@@ -114,6 +115,30 @@
             
             
         }
+        
+        // called from the canvas
+        function showOverlay(theID){
+            theOverlay = document.getElementById("interface");
+            theOverlay.style.display = "block";
+            $("#interface").animate({top: '592px'});
+            
+            
+        }
+        // called from the interface
+        function hideOverlay(){
+            console.log("SWIPING OVERLAY");
+            if (!processingInstance) {
+                processingInstance = Processing.getInstanceById('sketch');
+            }
+            theOverlay = document.getElementById("interface");
+            /// do animation      
+            $("#interface").animate({top: '768px'});
+            /// toggle the overlay flag so no interface
+            /// actions occour when clicking on canvas
+            processingInstance.overlayOff();
+        }
+        
+        
     
     </script>
 
@@ -181,7 +206,7 @@
         
         float gravWeight = -5;
         
-        // ArrayList movers;
+
         ArrayList<Mover> movers;
         ArrayList<TLine> lines;
         ArrayList<SineWave> tsines;
@@ -190,12 +215,14 @@
         lines = new ArrayList();
         movers = new ArrayList();
         
-        // Mover[] movers  = new Mover[totalMovers];
+
         Attractor a;
         //
         PVector wind = new PVector(0.01,0);
         PVector gravity = new PVector(0,0.01);
         //
+        
+        boolean interfaceShowing = true;
         
         void setup(){
             size(tWidth, tHeight);
@@ -329,6 +356,26 @@
             color newColor = unhex("FF" + dColor);
             bgColor = newColor;
         }
+        
+        ////////////////
+        ///// INTERFACE PARAMS ///////////
+        /////////////////////////////
+        void overlayOn(){
+            /// show overlay
+            window.showOverlay(); /// calls to the interface div in the htmls
+            interfaceShowing = true; ///
+        }
+        void overlayOff(){
+            interfaceShowing = false;
+        }
+        void mousePressed() {
+            // background(0);
+            // tweets.clear();
+            // words.clear();
+            overlayOn();
+        }
+        
+        
         ///////////////////////////////////////
         /////// ATTRACTOR OBJECT CLASS //////////
         ///////////////////////////////////////
@@ -368,9 +415,9 @@
         
         //// end attractor class
         
-                ///////////////////////////////////////
+        ///////////////////////////////////////
         //////// SINE WAVE OBJECT CLASS /////////
-            ///////////////////////////////////////
+        ///////////////////////////////////////
         
         class SineWave{
             ///*
@@ -544,6 +591,14 @@
          <!-- end content class -->
 
         <div id="interface">
+            
+            <!-- maybe this is where the button goes 
+             <a href="#" onClick="hideOverlay(); return false;" data-role="button" data-icon="minus" data-theme="a">HIDE</a>
+             --> 
+            <div id="closeButton" style="width:220px; height:200px;">
+                <a href="#" onClick="hideOverlay(); return false;"><IMG SRC="images/thumb_button.png" ALT="some text"></a>
+            </div>
+           
             <!-- left color picker -->
             <div id="colorPickerLeft">
             <div id="cp1">
