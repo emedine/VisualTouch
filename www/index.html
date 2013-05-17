@@ -192,7 +192,7 @@
         
     <div id="content">
         
-    <!-- start processing code -->
+    <!-- start processing code
     <script type="text/processing">
 	
         int tWidth = 1024;
@@ -584,64 +584,18 @@
         
         
       </script>
+     
+    
       <canvas id="sketch">
       </canvas>
+     
+     -->
+        <canvas data-processing-sources="VisualTouchProcessing.pde Attractor.pde Mover.pde SineWave.pde UI_classes.pde Rorschach.pde"></canvas>
         </div>
         
          <!-- end content class -->
 
-        <div id="interface">
-            
-            <!-- maybe this is where the button goes 
-             <a href="#" onClick="hideOverlay(); return false;" data-role="button" data-icon="minus" data-theme="a">HIDE</a>
-             --> 
-            <div id="closeButton" style="width:220px; height:200px;">
-                <a href="#" onClick="hideOverlay(); return false;"><IMG SRC="images/thumb_button.png" ALT="some text"></a>
-            </div>
-           
-            <!-- left color picker -->
-            <div id="colorPickerLeft">
-            <div id="cp1">
-                <input class="minicolors inline" data-control="saturation" type="text" value="#50c900">
-            </div>
-            </div>
-            
-            <div id="sliderHolder" style="left:175px;">
-            <!-- left slider list -->
-                <ul>
-                <li style="width:250px;">
-                    <!-- <div id ="GravityDial" class="yui3-skin-sam"></div> -->
-                    <input type="range" class="gravitySlider" min="-200" max="200" value="0" step="1" onchange="updateGravity(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
-                </li>
-                <li style="width:250px;">
-                    <input type="range" class="spawnSlider" min="0" max="400" value="50" step="1" onchange="updateSpawns(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
-                </li>
-                </ul>
-            </div>
-            <div id="sliderHolder" style="left:560px;" >
-                <!-- right slider list -->
-                <ul>
-                    <li style="width:250px;">
-                        <!-- <div id ="GravityDial" class="yui3-skin-sam"></div> -->
-                        <input type="range" class="gravitySlider1" min="-200" max="200" value="50" step="1" onchange="updateSineHeight(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
-                    </li>
-                    <li style="width:250px;">
-                        <input type="range" class="spawnSlider1" min="-200" max="200" value="50" step="1" onchange="updateSineSpeed(this.value)"  data-theme="a" style="display : none !important; margin-bottom:10px;"/>
-                    </li>
-                </ul>
-            </div>
 
-            <!-- right color picker -->
-            <div id="colorPickerRight">
-            <div id="cp2">
-                 <input class="minicolors inline" data-control="saturation" type="text" value="#50c900">
-            </div>
-            </div>
-
-
-            <!--  end interface -->
-    
-        </div>
       
 
     
