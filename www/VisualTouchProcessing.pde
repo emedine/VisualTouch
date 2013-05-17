@@ -1,4 +1,4 @@
-int visID = 2;
+int visID = 0;
 int tWidth = 1024;
 int tHeight = 768;
 int tMargin = 20;
@@ -15,7 +15,8 @@ float depth = 400;
 RotatingBoxes theBoxes;
 */
 
-
+/// COLOR SEEKER
+ColorSeeker theSwarm;
 //////Rorschach
 Rorschach theRorshack;
 
@@ -93,6 +94,11 @@ void setup(){
     /// init rorshack
     theRorshack = new Rorschach();
     theRorshack.generateBalls();
+    /// init Color Seeker
+    theSwarm = new ColorSeeker();
+    theSwarm.init();
+   
+   
     /// interfaces
     Sliders = new ArrayList();
     Wheels = new ArrayList();
@@ -189,7 +195,7 @@ void drawVisuals(){
       drawSines();
       break;
     case 1: 
-     
+      theSwarm.display(mouseX, mouseY);
       break;
     case 2: 
       // drawRorschach();
