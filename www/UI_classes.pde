@@ -127,7 +127,8 @@ public class vSlider
     endShape(CLOSE);  
 
     fill(c,165+Opacity);
-    text(theLabel + " : " + int(sliderValue), sliderX +5, sliderY + sHeight-1);     
+    // text(theLabel + " : " + int(sliderValue), sliderX +5, sliderY + sHeight-1);     
+    text(theLabel, sliderX +5, sliderY + sHeight-1);     
   }
 }
 
@@ -186,13 +187,13 @@ public class button{
         this.style = 0;
         this.toggle = false;
         bangOnce = false;
-        println("toggle = " + this.toggle);           
+        // println("toggle = " + this.toggle);           
 
       } else if (!this.toggle){
 
         this.toggle = true;
         this.style = 1;
-        println("toggle = " + this.toggle);           
+        // println("toggle = " + this.toggle);           
         
       }
       
@@ -319,10 +320,6 @@ class wheelUI {
  boolean isOver, locked;
  float value1, value2, value3;
  int Opacity;
- 
- int tR;
- int tG;
- int tB;
  color whColor;
  
  boolean UIclicked = true;
@@ -373,12 +370,8 @@ class wheelUI {
    if (Opacity > 0) Opacity = 0;
    
     strokeWeight(1);
-    stroke(255,0,100,50+Opacity);
+    stroke(255);
     ellipseMode(CENTER);
-    
-    tR= (int)map(value1, 0, 360, 1, 255);
-    tG=(int)map(r, 0, radius, 1, 255);
-    tB=(int)map(value2, 0, 180, 1, 255);
     
      pushMatrix();
      translate (x,y);
@@ -387,11 +380,14 @@ class wheelUI {
      noFill();
      
      line (r,0,0,0);
+     
      // ellipse (0,0,30,30);
     
-     // this is me converting to RGB
+     // convert to RGB
      // ( float r, float g, float b, float h, float s, float v )
-     color RGBColor = HSVtoRGB(value1, 100*.01, 100*.01);
+     float newBright = map(r,0,radius, 0,255);
+     color RGBColor = HSVtoRGB(value1, newBright*.01,newBright*.01);
+     // color RGBColor = HSVtoRGB(value1-newBright, (100*.01)*newBright, (100*.01)*newBright);
      
      whColor = RGBColor;
      

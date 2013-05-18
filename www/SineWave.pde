@@ -4,6 +4,7 @@
 
 class SineWave{
     ///*
+     int sampSize = 16;
      int xspacing = 16;   // How far apart should each horizontal location be spaced
      int w;              // Width of entire wave
      
@@ -34,32 +35,30 @@ class SineWave{
     void display() {
       dx = (TWO_PI / period) * xspacing;
       yvalues = new float[w/xspacing];
-        
-
-     calcWave();
-     renderWave();
+       calcWave();
+       renderWave();
      }
-     
+       
      void calcWave() {
-     // Increment theta (try different values for 'angular velocity' here
-     // thetaBase += 0.02;
-     thetaBase += theta;
-     // For every x value, calculate a y value with sine function
-     float x = thetaBase;
-     for (int i = 0; i < yvalues.length; i++) {
-     yvalues[i] = sin(x)*amplitude;
-     x+=dx;
+       // Increment theta (try different values for 'angular velocity' here
+       // thetaBase += 0.02;
+       thetaBase += theta;
+       // For every x value, calculate a y value with sine function
+       float x = thetaBase;
+       for (int i = 0; i < yvalues.length; i++) {
+         yvalues[i] = sin(x)*amplitude;
+         x+=dx;
+       }
      }
-     }
-     
+       
      void renderWave() {
-     fill(0,0,0,0);
-     strokeWeight(1);
-     stroke(bgColor);
-     // A simple way to draw the wave with an ellipse at each location
-     for (int x = 0; x < yvalues.length; x++) {
-     ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
-     }
+       fill(0,0,0,0);
+       strokeWeight(sampSize/3);
+       stroke(MXColor2);
+       // A simple way to draw the wave with an ellipse at each location
+       for (int x = 0; x < yvalues.length; x++) {
+         ellipse(x*sampSize, height/2+yvalues[x], sampSize, sampSize);
+       }
      }
     
     

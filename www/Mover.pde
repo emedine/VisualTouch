@@ -54,7 +54,7 @@ class Mover{
         
     }
     void display(){
-        stroke(trimColor);
+        stroke(MXColor1);
         strokeWeight(4);
         fill(0,0,0);
         

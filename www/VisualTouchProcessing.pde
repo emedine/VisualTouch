@@ -1,4 +1,5 @@
-int visID = 0;
+int visID = 1;
+
 int tWidth = 1024;
 int tHeight = 768;
 int tMargin = 20;
@@ -22,7 +23,8 @@ Rorschach theRorshack;
 
 // MASTER COLORS
 color trimColor = color(255);
-color bgColor = color(0);
+color MXColor1 = color(0);
+color MXColor2 = color(255,0,0);
 color UITrim = color(255,255,255);
 
 float gravWeight = -5;
@@ -33,6 +35,7 @@ ArrayList<TLine> lines;
 ArrayList<SineWave> tsines;
 
 //////// INTERFACE ARRAYAS
+ArrayList<String> VisNames;
 ArrayList<vSlider> Sliders;
 ArrayList<wheelUI> Wheels;
 ArrayList<button> Buttons;
@@ -52,15 +55,16 @@ int buttonHeight = 50;
 
 vSlider gravitySlider;
 vSlider speedSlider;
+vSlider sizeSlider;
 vSlider spawnSlider;
 vSlider heightSlider;
 
 wheelUI colorWheelL;
 wheelUI colorWheelR;
 
+button styleSwitch0;
 button styleSwitch1;
 button styleSwitch2;
-button styleSwitch3;
 
 boolean showSliders = true;
 boolean showSwitches = true;
@@ -97,9 +101,16 @@ void setup(){
     /// init Color Seeker
     theSwarm = new ColorSeeker();
     theSwarm.init();
+    
+    //// sines and circles   
+    spawnMovers();
+    spawnSines();
+    // generate attractor
+    a = new Attractor(gravWeight);
    
    
     /// interfaces
+    VisNames = new ArrayList();
     Sliders = new ArrayList();
     Wheels = new ArrayList();
     Buttons = new ArrayList();
@@ -118,37 +129,41 @@ void setup(){
 
     spawnSlider = new vSlider(sliderPosX, sliderPosY, sliderWidths, sliderHeights, color(255,0,100), 255, "Number");
     gravitySlider = new vSlider(sliderPosX + (sliderWidths*1) + tMargin, sliderPosY, sliderWidths, sliderHeights, UITrim, 255,"Gravity");
-    speedSlider = new vSlider(sliderPosX +  (sliderWidths*2) + tMargin*2, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Speed");
-    heightSlider = new vSlider(sliderPosX +  (sliderWidths*3) + tMargin*3, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Height");
+    sizeSlider = new vSlider(sliderPosX + (sliderWidths*2) + tMargin*2, sliderPosY, sliderWidths, sliderHeights, UITrim, 255,"Size");
+    speedSlider = new vSlider(sliderPosX +  (sliderWidths*3) + tMargin*3, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Speed");
+    heightSlider = new vSlider(sliderPosX +  (sliderWidths*4) + tMargin*4, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Height");
     
     Sliders.add(spawnSlider);
     Sliders.add(gravitySlider);
+    Sliders.add(sizeSlider);
     Sliders.add(speedSlider);
     Sliders.add(heightSlider);
 
-
+    int tLength = Sliders.size();
     //// do buttons
     /// (float bX, float bY, float bWidth, float bHeight, int colorPreset, int style)
-    styleSwitch1 = new button(sliderPosX + (sliderWidths*3) + tMargin*3 + buttonWidth, sliderPosY, buttonWidth, buttonHeight, UITrim, 1);
-    styleSwitch2 = new button(sliderPosX + (sliderWidths*3) + tMargin*3 + buttonWidth * 2, sliderPosY, buttonWidth, buttonHeight, UITrim, 1);
-    styleSwitch3 = new button(sliderPosX + (sliderWidths*3) + tMargin*3 + buttonWidth * 3, sliderPosY, buttonWidth, buttonHeight, UITrim, 1);
+    styleSwitch0 = new button(sliderPosX + (sliderWidths*tLength) + tMargin*tLength + buttonWidth, sliderPosY, buttonWidth, buttonHeight, UITrim, 1);
+    styleSwitch1 = new button(sliderPosX + (sliderWidths*tLength) + tMargin*tLength + buttonWidth * 2, sliderPosY, buttonWidth, buttonHeight, UITrim, 1);
+    styleSwitch2 = new button(sliderPosX + (sliderWidths*tLength) + tMargin*tLength + buttonWidth * 3, sliderPosY, buttonWidth, buttonHeight, UITrim, 1);
 
+    Buttons.add(styleSwitch0);
     Buttons.add(styleSwitch1);
     Buttons.add(styleSwitch2);
-    Buttons.add(styleSwitch3);
     
-    spawnMovers();
-    spawnSines();
-    // spawnLines();
-    // generate attractor
+    VisNames.add("SineWave");
+    VisNames.add("ColorSeeker");
+    VisNames.add("Rorchach");
 
-    a = new Attractor(gravWeight);
 }
 
 void draw(){
     /// do bg color
-
-    background(0);
+    if(visID == 0){
+      background(0);
+    } else {
+      background(MXColor1);
+    }
+    
     /// draw and apply visuals
     drawVisuals();
     /// shows the "attractor"
@@ -206,13 +221,18 @@ void drawVisuals(){
   
 }
 
+/////////////////////////
 //// update all settings
+///////////////////////////
 void checkInterface(){
    if(spawnSlider.isOver){
       changeSpawns(spawnSlider.sliderValue);
     }
     if(gravitySlider.isOver){
-      gravWeight = (int)gravitySlider.sliderValue;
+      changeGravity((int)gravitySlider.sliderValue);
+    }
+    if(sizeSlider.isOver){
+      changeSize((int)sizeSlider.sliderValue);
     }
     if(speedSlider.isOver){
       changeSineSpeed((int)speedSlider.sliderValue);
@@ -223,24 +243,24 @@ void checkInterface(){
     
     
     if(colorWheelL.isOver){
-       trimColor = colorWheelL.whColor;
+       MXColor1 = colorWheelL.whColor;
     }
     
     if(colorWheelR.isOver){
-       bgColor = colorWheelR.whColor;
-       if(visID == 3){
-         theRorshack.ballColor = bgColor;
-         theRorshack.generateImage();
+       MXColor2 = colorWheelR.whColor;
+       if(visID == 2){
+         theRorshack.ballColor = MXColor2;
+         
        }
     }
     ///*
-    if(styleSwitch1.toggle){
+    if(styleSwitch0.toggle){
       visID = 0;
     }
-    if(styleSwitch2.toggle){
+    if(styleSwitch1.toggle){
       visID = 1;
     }
-    if(styleSwitch3.toggle){
+    if(styleSwitch2.toggle){
       visID = 2;
     }
     //*/
@@ -312,12 +332,18 @@ void changeGravity(float theGrav){
     /// println("GRAV: " + theGrav + " NEW: " + gravWeight);
     
 }
+void changeSize(float theSize){
+    for (int i=0; i< tsines.size(); i++){
+        SineWave dsine = tsines.get(i);
+        dsine.sampSize = (int)map(theSize, 0, sliderHeights, 0, 35);
+    } 
+  
+}
 // SPAWN PARAMS
 void changeSpawns(float theValue){
     totalMovers = int(map(theValue, 1, 400, 1, 20));
     spawnMovers();
     // println(totalMovers);
-    
 }
 
 void changeSineHeight(float theH){
@@ -325,9 +351,7 @@ void changeSineHeight(float theH){
         SineWave dsine = tsines.get(i);
         dsine.amplitude = map(theH, 0, sliderHeights, 0, 250);
        
-    }
-    
-    
+    } 
 }
 void changeSineSpeed(float theS){
     for (int i=0; i< tsines.size(); i++){
@@ -335,22 +359,20 @@ void changeSineSpeed(float theS){
         //// dsine.period = map(theS, -200,200, 0, 800); ///this changes the spacing
         dsine.theta = map(theS, 0,sliderHeights, 0.00, .99);
     }
-    
-    
 }
 
 //// DISPLAY PARAMS
-void changeTrimColor(String theColor){
+void changeMXColor1(String theColor){
     //// change font color
     String dColor = theColor; // theColor.substring(1);
     color newColor = unhex("FF" + dColor);
-    trimColor = newColor;
+    MXColor2 = newColor;
 }
-void changeBgColor(String theColor){
+void changeMXColor2(String theColor){
     //// change font color
     String dColor = theColor; // theColor.substring(1);
     color newColor = unhex("FF" + dColor);
-    bgColor = newColor;
+    MXColor2 = newColor;
 }
 
 ////////////////
@@ -393,7 +415,7 @@ class TLine{
     void display(){
         fill(0);
         strokeWeight(1);
-        stroke(bgColor,200);
+        stroke(MXColor2,200);
         rect(posX, posY, lWidth, lHeight);
         
         

@@ -18,6 +18,7 @@ class Rorschach{
   boolean blackBackground;
   boolean smileyMode;
   color backgroundColor;
+  color tempColor;
   color ballColor;
   boolean randomColor;
    
@@ -53,12 +54,15 @@ class Rorschach{
     vMax = 3;
     balls = new float[nBalls][4];
     backgroundColor = color(0);
-    ballColor = color(255,0,0);
+    ballColor = color(MXColor2,0);
     radius = 80;
   }
    
   void display(){
-    background(255);
+    if(tempColor != ballColor){
+      tempColor = ballColor;
+      generateImage();
+    }
     moveBalls();
     for(int i=0; i<nBalls; i++){
       if(!rorschach){
@@ -69,7 +73,9 @@ class Rorschach{
         image(ballImage,balls[i][0]-radius,balls[i][1]-radius);
       }
     }
-   
+    
+   // filter(THRESHOLD,thresh);
+   // filter(INVERT);
   /*
     if(applyThreshold){
       // filter(MULTIPLY);
@@ -293,38 +299,41 @@ void generateImage(){
 
 void generateCircleImage(){
   ballImage = createImage(radius*2,radius*2,ARGB);
-  color thisColor = color(0,0,0,0);
+  color thisColor = color(MXColor2);
   float rSquared = 0;
   for(int x= 0; x<=radius; x++)
     for(int y= 0; y<=radius; y++){
       rSquared = pow(x-radius,2)+pow(y-radius,2);
       if(rSquared<radius*radius){
-        //*
+       /*
         if(renderDiscretely){
           if(invertAlpha)
-            thisColor = color(0,0,0,
+            thisColor = color(MXColor2,
                         255*((int)(sqrt(rSquared)/radius*nSteps)+1)/nSteps);
           else
-            thisColor = color(0,0,0,
+            thisColor = color(MXColor2,
                         255*(nSteps-(int)(sqrt(rSquared)/radius*nSteps))/nSteps);
         }
         else{
           if(invertAlpha)
-            thisColor = color(0,0,0,
+            thisColor = color(MXColor2,
                         255*(rSquared/(radius*radius)));
           else
-            thisColor = color(0,0,0,
+            thisColor = color(MXColor2,
                         255*(1-rSquared/(radius*radius)));
         }
-        //*/
-        thisColor = color(0,0,0,255*(1-rSquared/(radius*radius)));
+        
+        thisColor = color(MXColor2, 255*(1-rSquared/(radius*radius)));
+        */
+        float tAlpha = 255*(1-rSquared/(radius*radius));
+        thisColor = color(MXColor2, (int)tAlpha); // color(MXColor2,255*(1-rSquared/(radius*radius)));
         ballImage.set(x,y,thisColor);
         ballImage.set(2*radius-x,y,thisColor);
         ballImage.set(2*radius-x,2*radius-y,thisColor);
         ballImage.set(x,2*radius-y,thisColor);
       }
       else
-        ballImage.set(x,y,color(0,0,0,0));
+        ballImage.set(x,y,color(thisColor,0));
     }
 }
  

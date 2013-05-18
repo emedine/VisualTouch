@@ -184,8 +184,9 @@ class Seeker{
   }
    
   public void render(){
+    noStroke();
     fill(fillColor);
-    radius = sq(map(velocity.mag(), 0, maxVelocity, 10, 5));
+    radius = sq(map(velocity.mag(), 0, maxVelocity, 20, 3));
     if(shapeType == 0){
       rect(position.x, position.y, radius, radius);
     }
