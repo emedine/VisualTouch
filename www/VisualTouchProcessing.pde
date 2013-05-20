@@ -335,7 +335,7 @@ void changeGravity(float theGrav){
 void changeSize(float theSize){
     for (int i=0; i< tsines.size(); i++){
         SineWave dsine = tsines.get(i);
-        dsine.sampSize = (int)map(theSize, 0, sliderHeights, 0, 35);
+        dsine.sampSize = (int)map(theSize, 0, sliderHeights, 16, 127);
     } 
   
 }

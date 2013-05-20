@@ -385,7 +385,7 @@ class wheelUI {
     
      // convert to RGB
      // ( float r, float g, float b, float h, float s, float v )
-     float newBright = map(r,0,radius, 0,255);
+     float newBright = map(r,0,radius, -10,255);
      color RGBColor = HSVtoRGB(value1, newBright*.01,newBright*.01);
      // color RGBColor = HSVtoRGB(value1-newBright, (100*.01)*newBright, (100*.01)*newBright);
      
@@ -404,12 +404,44 @@ class wheelUI {
      strokeWeight(2);
      for(int i = 0; i < 36; i++) {
         rotate(radians(10));
-        stroke (i*10, 100,100,70+Opacity);     
+        color tBorder =  HSVtoRGB(i*10f, 100*.01,100*.01);
+        stroke (tBorder);     
+        /// stroke (i*10, 100,100,70+Opacity);     
         line (-5,-radius,5,-radius);
 //        point (0,-radius);
      }
      popMatrix();      
  }
+ 
+//-------- hightlight button class--------------
+ class buttonUp {
+ int offsetX,offsetY,id;
+ int buttonSize;
+ 
+ buttonUp (int x, int y, int buttonSize, int i) {
+   this.offsetX = x +1;
+   this.offsetY = y;
+   this.id = id;
+   this.buttonSize = buttonSize;
+ }
+ void setID (int id) {
+  this.id = id; 
+ }
+ void Draw () {
+  strokeWeight(1);
+  beginShape();
+  vertex(offsetX, offsetY + buttonSize*id); 
+  vertex(offsetX+ buttonSize/4*3, offsetY + buttonSize*id );
+  vertex(offsetX  + buttonSize, offsetY+buttonSize/4+ buttonSize*id);
+  vertex(offsetX  + buttonSize, offsetY+buttonSize+ buttonSize*id);
+  vertex(offsetX , offsetY+buttonSize+ buttonSize*id);    
+  endShape(CLOSE);    
+ }
+
+}
+
+ 
+ 
   //////////////// HSB to RGB
 color HSVtoRGB(float h, float s, float v ){
   int i;
@@ -468,34 +500,5 @@ color HSVtoRGB(float h, float s, float v ){
 }
 
 //// 
-}
-//-------- hightlight button class--------------
- class buttonUp {
-   int offsetX,offsetY,id;
-   int buttonSize;
-   
-   buttonUp (int x, int y, int buttonSize, int i) {
-     this.offsetX = x +1;
-     this.offsetY = y;
-     this.id = id;
-     this.buttonSize = buttonSize;
-   }
-   void setID (int id) {
-    this.id = id; 
-   }
-   void Draw () {
-    strokeWeight(1);
-    beginShape();
-    vertex(offsetX, offsetY + buttonSize*id); 
-    vertex(offsetX+ buttonSize/4*3, offsetY + buttonSize*id );
-    vertex(offsetX  + buttonSize, offsetY+buttonSize/4+ buttonSize*id);
-    vertex(offsetX  + buttonSize, offsetY+buttonSize+ buttonSize*id);
-    vertex(offsetX , offsetY+buttonSize+ buttonSize*id);    
-    endShape(CLOSE);    
- }
- 
- 
-
-
 }
 
