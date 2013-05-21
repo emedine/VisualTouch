@@ -8,8 +8,12 @@ class Rorschach{
   float[][] balls;
    
   int ballShapeMode;
-  int numBallShapes = 2;
+  int tempBShapeMode;
+  int numBallShapes = 0;
+  
   int movementMode;
+  int tempMoveMode;
+  
   boolean applyThreshold;
   boolean renderDiscretely;
   boolean rorschach;
@@ -59,10 +63,22 @@ class Rorschach{
   }
    
   void display(){
+    //// check to see if parameters have been changed
     if(tempColor != ballColor){
       tempColor = ballColor;
       generateImage();
     }
+    
+    if(tempMoveMode != movementMode){
+      tempMoveMode = movementMode;
+      generateImage();
+    }
+    //tempBShapeMode
+    if(tempBShapeMode != ballShapeMode){
+      tempBShapeMode = ballShapeMode;
+      generateImage();
+    }
+    
     moveBalls();
     for(int i=0; i<nBalls; i++){
       if(!rorschach){
@@ -336,30 +352,19 @@ void generateCircleImage(){
         ballImage.set(x,y,color(thisColor,0));
     }
 }
- 
+  
    
 void generateSquareImage(){
   ballImage = createImage(radius*2,radius*2,ARGB);
-  color thisColor = color(0,0,0,0);
+  color thisColor = color(MXColor2);
+  int tAlpha;
   float delta = 0;
     for(int x= 0; x<=radius; x++)
       for(int y= x; y<=radius; y++){
         delta = x;
-        if(renderDiscretely){
-          if(invertAlpha)
-            thisColor = color(0,0,0,
-                              255*(nSteps-1-(int)(delta/(radius)*(nSteps)))/(nSteps-1));
-          else
-            thisColor = color(0,0,0,
-                              255*((int)(delta/(radius)*(nSteps))+1)/(nSteps));
-        }
-        else{
-          if(invertAlpha)
-            thisColor = color(0,0,0,
-                        255*(1.0-delta/(radius)));
-          else
-            thisColor = color(0,0,0,255*(delta/(radius)));
-        }
+     
+        tAlpha = 255*(int)(1.0-delta/(radius));
+        thisColor = color(MXColor2, (int)tAlpha); 
         ballImage.set(x,y,thisColor);
         ballImage.set(y,x,thisColor);
         ballImage.set(2*radius-x,y,thisColor);
@@ -373,31 +378,30 @@ void generateSquareImage(){
  
 void generateRingImage(){
   ballImage = createImage(radius*2,radius*2,ARGB);
-  color thisColor = color(0,0,0,0);
+  color thisColor = color(MXColor2);
   float delta = 0;
+  int tAlpha = 255;
     for(int x= 0; x<=radius*2; x++)
       for(int y= 0; y<=radius*2; y++){
         delta = sqrt(pow(x-radius,2)+pow(y-radius,2));
         if(delta<radius){
           if(renderDiscretely){
             if(invertAlpha)
-              thisColor = color(0,0,0,
-                          255.0*( (int)(2*abs(delta/(float)radius-.5)*nSteps)/(nSteps-1.0) ));
+              tAlpha = (int)(255*(2*abs(delta/(float)radius-.5)*nSteps)/(nSteps-1.0));
             else
-              thisColor = color(0,0,0,
-                          255.0*( (int)(nSteps+1-2*abs(delta/(float)radius-.5)*nSteps)/(nSteps+0.0) ));
+              tAlpha = (int)(255*(nSteps+1-2*abs(delta/(float)radius-.5)*nSteps)/(nSteps+0.0));
           }
           else{
             if(invertAlpha)
-              thisColor = color(0,0,0,
-                          255*(2*abs(delta/(float)radius-.5)));
+              tAlpha = (int)(255*(2*abs(delta/(float)radius-.5)));
             else
-              thisColor = color(0,0,0,
-                          255*(1-2*abs(delta/(float)radius-.5)));
+              tAlpha = (int)(255*(1-2*abs(delta/(float)radius-.5)));
           }
+          thisColor = color(MXColor2, tAlpha); 
           ballImage.set(x,y,thisColor);
         }
         else{
+          thisColor = color(MXColor2, tAlpha); 
           ballImage.set(x,y,color(0,0,0,0));
         }
       }
@@ -408,26 +412,17 @@ void generateHyperbolicImage(){
   ballImage = createImage(radius*2,radius*2,ARGB);
   color thisColor = color(255,0,0,0);
   float delta = 0;
+  int tAlpha = 255;
     for(int x= 0; x<=radius; x++)
       for(int y= 0; y<=radius; y++){
         delta = 2*radius/(float)(2*radius-x)-1;
         delta+= 2*radius/(float)(2*radius-y)-1;
         delta = delta/2.0;
-        if(renderDiscretely){
-          if(invertAlpha)
-            thisColor = color(0,0,0,
-                              255*(nSteps-1-(int)(delta*nSteps))/(nSteps-1));
-          else
-            thisColor = color(0,0,0,
-                              255*((int)(delta*nSteps)+1)/(nSteps));
+        if(nSteps-1 <1){
+          nSteps = 2;
         }
-        else{
-          if(invertAlpha)
-            thisColor = color(0,0,0,
-                        255*(1.0-delta));
-          else
-            thisColor = color(0,0,0,255*(delta));
-        }
+        tAlpha = 255*(int)(nSteps-1-(delta*nSteps))/(nSteps-1);
+        thisColor = color(MXColor2, tAlpha);
         ballImage.set(x,y,thisColor);
         ballImage.set(y,x,thisColor);
         ballImage.set(2*radius-x,y,thisColor);

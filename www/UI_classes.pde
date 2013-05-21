@@ -9,10 +9,10 @@ public class vSlider
   float sdifx = 0.0; 
   float sdify = 0.0; 
   color c;
+  int Opacity = 255;
   boolean locked,switch1,switch2;
   float origHeight,origY ;
   float sliderPosition,sliderValue;
-  int Opacity;
   
   String theLabel;
   
@@ -67,33 +67,30 @@ public class vSlider
     } else {
       isOver = false; 
     }
-
-/*
-    if(isOver && showSliders) { 
-       if (UIclicked) {     
-          locked = true;
-//      println("slider Clicked");
-      }
-    }
-    if(!UIclicked) {
-      locked = false;
-    }
-    */
-    if(isOver && showSliders){
+    // if(isOver && showSliders){  //// this disables if hidden, which is lame
+    if(isOver){
       locked = true;
     } else {
       locked = false;
     }
-    if(showSliders) Opacity +=5;
-    else Opacity -=5;
-    
-    if (Opacity >0) Opacity = 0;
-    if (Opacity < -50) Opacity = -50;
-  
+   if (showSliders) {
+      if (Opacity >= 65) {
+        Opacity = 125;
+      } else {
+        Opacity += 65;
+      }
+     
+   } else { 
+      if (Opacity <= 0) {
+        Opacity = 0;
+      } else {
+         Opacity -= 15;
+      }
+   }
     strokeWeight (2);    
-    fill(c,10+Opacity);
-    stroke(c,50+Opacity);
-    stroke(c,50+Opacity);
+    fill(c,Opacity);
+    stroke(c,Opacity);
+    stroke(c,Opacity);
     beginShape();
     vertex(sliderX + sWidth - sWidth/4, sliderY-sWidth/4); 
     vertex(sliderX + sWidth, sliderY-sWidth/4);
@@ -102,8 +99,8 @@ public class vSlider
     
     beginShape();    
     if (locked) {
-      fill(c,75+Opacity);
-      stroke(c,165+Opacity); 
+      fill(c,Opacity);
+      stroke(c,Opacity); 
       
       sliderPosition = mouseY;
       
@@ -116,8 +113,8 @@ public class vSlider
       
       sliderValue = map(sliderPosition, sliderY, sliderY + sHeight, 255, 0); 
     }else {
-          fill(c,75+Opacity);
-          stroke(c,165+Opacity); 
+          fill(c,Opacity);
+          stroke(c,Opacity); 
         } 
     vertex(sliderX, sliderPosition-sWidth/4);
     vertex(sliderX + sWidth - sWidth/4, sliderPosition-sWidth/4); 
@@ -126,7 +123,7 @@ public class vSlider
     vertex(sliderX , sliderY + sHeight);  
     endShape(CLOSE);  
 
-    fill(c,165+Opacity);
+    fill(c,Opacity);
     // text(theLabel + " : " + int(sliderValue), sliderX +5, sliderY + sHeight-1);     
     text(theLabel, sliderX +5, sliderY + sHeight-1);     
   }
@@ -144,11 +141,11 @@ public class button{
   boolean bOver;
   float bdifx = 0.0; 
   float bdify = 0.0; 
+  int Opacity = 255;
   int c;
   boolean toggle;
   boolean buttonClicked,switch1,switch2;
   int style;
-  int Opacity;
   
   boolean UIclicked = true;
   
@@ -165,16 +162,22 @@ public class button{
   
   void display(){
    if (showSwitches) {
-     Opacity += 5;
+      if (Opacity > 250) {
+        Opacity = 255;
+      } else {
+        Opacity += 15;
+      }
+     
    } else { 
-     Opacity -= 5;
+      if (Opacity <= 0) {
+        Opacity = 0;
+      } else {
+         Opacity -= 15;
+      }
    }
    
-   if (Opacity < -75) Opacity = -75;
-   if (Opacity > 0) Opacity = 0;
      
-   if (mouseX > bX && mouseX < bX+bWidth && 
-        mouseY > bY && mouseY < bY+bHeight) {       
+   if (mouseX > bX && mouseX < bX+bWidth && mouseY > bY && mouseY < bY+bHeight) {       
       this.bOver = true;    
     } 
     else 
@@ -182,7 +185,8 @@ public class button{
       this.bOver = false;
     }
     if (this.bOver == true && bangOnce){
-      if (this.toggle && showSwitches){
+      // if (this.toggle && showSwitches){ //// this disables if hidden, which is lame
+      if (this.toggle){ 
         // buttonClicked = true;
         this.style = 0;
         this.toggle = false;
@@ -210,8 +214,8 @@ public class button{
       tB = 100;
     } 
     
-    color tColor = color(c);
-    fill(tColor, 65);
+    color tColor = color(c, Opacity);
+    fill(tColor, Opacity);
     if(toggle){
       rect (bX,bY, bWidth,bHeight);   
     }
@@ -319,9 +323,8 @@ class wheelUI {
  float r;
  boolean isOver, locked;
  float value1, value2, value3;
- int Opacity;
  color whColor;
- 
+ int Opacity = 255;
  boolean UIclicked = true;
  
  wheelUI (int x,int y, int radius) {
@@ -335,19 +338,10 @@ class wheelUI {
     if (mouseX > x-radius && mouseX < x + radius
         && mouseY > y-radius && mouseY <y + radius) {
         isOver = true;
-        } else isOver = false;
+    } else isOver = false;
         
-    /* 
-    if(isOver && showWheels) { 
-       if (UIclicked) {     
-      locked = true;
-      println("Wheel Clicked");}
-    }
-    if(!UIclicked) {
-      locked = false;
-    }
-    */
-    if(isOver && showWheels){
+    /// if(isOver && showWheels){   //// this disables if hidden, which is lame
+    if(isOver){
       locked = true;
     } else {
       locked = false;
@@ -363,14 +357,23 @@ class wheelUI {
      /// value3 = map(r, 0, radius, 0,100);
    }
    
-   if (showWheels) Opacity += 10;
-   else Opacity -= 10;
-   
-   if (Opacity < -100) Opacity = -100;
-   if (Opacity > 0) Opacity = 0;
+   if (showWheels) {
+      if (Opacity > 250) {
+        Opacity = 255;
+      } else {
+        Opacity += 15;
+      }
+     
+   } else { 
+      if (Opacity <= 0) {
+        Opacity = 0;
+      } else {
+         Opacity -= 15;
+      }
+   }
    
     strokeWeight(1);
-    stroke(255);
+    stroke(255, 255, 255, Opacity);
     ellipseMode(CENTER);
     
      pushMatrix();
@@ -393,7 +396,7 @@ class wheelUI {
      
      // whColor = color(value1, 100,value2);
      // println("value1: " + value1 + " val 2" + value2 + " rad: " + r + " newcolor: " + whColor);
-     fill (whColor);
+     fill (whColor, Opacity);
      // fill (degrees(angle)+180, 100,value2,100+Opacity);
      ellipse (r,0,30,30);
      popMatrix();
@@ -405,7 +408,7 @@ class wheelUI {
      for(int i = 0; i < 36; i++) {
         rotate(radians(10));
         color tBorder =  HSVtoRGB(i*10f, 100*.01,100*.01);
-        stroke (tBorder);     
+        stroke (tBorder, Opacity);     
         /// stroke (i*10, 100,100,70+Opacity);     
         line (-5,-radius,5,-radius);
 //        point (0,-radius);
