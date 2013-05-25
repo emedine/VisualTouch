@@ -8,7 +8,7 @@ public class vSlider
   boolean isOver;
   float sdifx = 0.0; 
   float sdify = 0.0; 
-  color c;
+  color c = 255;
   int Opacity = 255;
   boolean locked,switch1,switch2;
   float origHeight,origY ;
@@ -184,40 +184,28 @@ public class button{
     {
       this.bOver = false;
     }
-    if (this.bOver == true && bangOnce){
-      // if (this.toggle && showSwitches){ //// this disables if hidden, which is lame
+    if (this.bOver == true && bangOnce && showSwitches){  //// this disables if hidden so no switching content by accident
+    
       if (this.toggle){ 
-        // buttonClicked = true;
-        this.style = 0;
         this.toggle = false;
         bangOnce = false;
         // println("toggle = " + this.toggle);           
 
-      } else if (!this.toggle){
-
+      } else {
         this.toggle = true;
-        this.style = 1;
-        // println("toggle = " + this.toggle);           
-        
+        bangOnce = false;
       }
       
     } else {
       buttonClicked = false;
     }
     
-    // noStroke();
-    int tB;
-    if(this.style == 0){
-      tB = 200;
-      
-    } else {
-      tB = 100;
-    } 
-    
     color tColor = color(c, Opacity);
-    fill(tColor, Opacity);
     if(toggle){
+      fill(tColor, Opacity - 125);
       rect (bX,bY, bWidth,bHeight);   
+    } else {
+      fill(tColor, Opacity);
     }
     // 
     

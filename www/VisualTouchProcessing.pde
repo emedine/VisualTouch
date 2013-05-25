@@ -1,4 +1,4 @@
-int visID = 0;
+int visID = 4;
 String visType;
 
 int tWidth = 1024;
@@ -17,6 +17,8 @@ ColorSeeker theSwarm;
 Rorschach theRorshack;
 /// SpaceHarrier
 SpaceHarrier tSpaceHarrier;
+///// bulls eye
+BullsEye tBullsEye;
 ////// SPINNING BOXES
 /*
 float depth = 400;
@@ -94,14 +96,13 @@ void setup(){
     theSwarm = new ColorSeeker();
     theSwarm.init(); 
     tSpaceHarrier = new SpaceHarrier();
+    tBullsEye = new BullsEye();
     
     spawnMovers();
     spawnSines();
     // generate attractor
     a = new Attractor(gravWeight);
-    
-   
-   
+
     /// interfaces
     VisNames = new ArrayList();
     Sliders = new ArrayList();
@@ -154,6 +155,7 @@ void setup(){
 }
 
 void draw(){
+    noStroke();
     /// do bg color
     if(visType == "SineWave"){
       /// background(0);
@@ -162,14 +164,14 @@ void draw(){
       // background(MXColor1);
       fill(MXColor1,65);
     }
-    noStroke();
+    
     /// do weird "tracer"
     rect(0,0,tWidth, tHeight);
     /// draw and apply visuals
     drawVisuals();
     //// draw and apply interface
-    drawInterface();
     checkInterface();
+    drawInterface();
 }
 
 void drawInterface(){
@@ -262,6 +264,10 @@ void drawVisuals(){
     case 3: 
       tSpaceHarrier.display();
       break;
+      
+    case 4:
+     tBullsEye.display();
+     break;
   }
   
 }
@@ -271,13 +277,13 @@ void drawVisuals(){
 void changeGravity(float theGrav){
     gravWeight = map(theGrav, 0,sliderHeights,-10,10);
     a.G = gravWeight;
-    /// println("GRAV: " + theGrav + " NEW: " + gravWeight);
+    /// // println("GRAV: " + theGrav + " NEW: " + gravWeight);
     
 }
 void changeSize(float theSize){
     for (int i=0; i< tsines.size(); i++){
         SineWave dsine = tsines.get(i);
-        dsine.sampSize = (int)map(theSize, 0, sliderHeights, 16, 127);
+        dsine.sampSize = (int)map(theSize, 0, sliderHeights, 16, 500);
     } 
   
 }
@@ -285,7 +291,7 @@ void changeSize(float theSize){
 void changeSpawns(float theValue){
     totalMovers = int(map(theValue, 1, 400, 1, 20));
     spawnMovers();
-    // println(totalMovers);
+    // // println(totalMovers);
 }
 
 void changeSineHeight(float theH){
@@ -349,7 +355,7 @@ void spawnMovers(){
     // generate movers
     movers.clear();
     for (int i=0; i< totalMovers; i++){
-        // println("ADDING MOVER: " + i);
+        // // println("ADDING MOVER: " + i);
         // movers[i] = new Mover(random(0.1,5),0,0);
         movers.add(new Mover(random(0.1,5),0,0));  
     } 
@@ -412,63 +418,29 @@ void mousePressed() {
     
   }
   
-  /// show the interface if you click 20 px from the bottom of the screen
+  /// hide, but leave active, the interface if you click on the top right corner
   if(mouseX > tWidth -100 && mouseY < 100){
-    println("CLICK QUAD");
+    // // println("CLICK QUAD");
     toggleUIBrightness();
 
     
-  } else {
-    /*
-    
-    */
-
-  }
+  } 
   
 }
 void mouseClicked() {
   if (bangOnce == false) {
+    /// retoggle all buttons
+    resetButtons();
     bangOnce = true;
   } 
 }
-
- 
-
- 
-
-///////////////////////////////////////
-/////// LINE OBJECT CLASS //////////
-///////////////////////////////////////
-/* 
-class TLine{
-    float lWidth;
-    float lHeight;
-    float posX;
-    float posY;
+void resetButtons(){
+  for(int i =0; i< Buttons.size(); i++){
+    button tB = Buttons.get(i);
+    tB.toggle = false;
     
-    TLine(float lw, float lh, float px, float py){
-        lWidth = lw;
-        lHeight = lh;
-        posX = px;
-        posY = py;
-        
-    }
-    void initLine(){
-        
-        
-    }
-    void display(){
-        fill(0);
-        strokeWeight(1);
-        stroke(MXColor2,200);
-        rect(posX, posY, lWidth, lHeight);
-        
-        
-    }
-    // end class
+  }
+  
 }
-
-//// end line class
-*/
-
+ 
 

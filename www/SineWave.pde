@@ -53,7 +53,7 @@ class SineWave{
        
      void renderWave() {
        fill(0,0,0,0);
-       strokeWeight(sampSize/3);
+       strokeWeight(sampSize/13);
        stroke(MXColor2);
        // A simple way to draw the wave with an ellipse at each location
        for (int x = 0; x < yvalues.length; x++) {
