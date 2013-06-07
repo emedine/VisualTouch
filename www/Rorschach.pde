@@ -306,11 +306,11 @@ void generateImage(){
   if(ballShapeMode == 0)
     generateCircleImage();
   if(ballShapeMode == 1)
-    generateRingImage();
+    generateSquareBlackImage();
   if(ballShapeMode == 2)
     generateSquareImage();
   if(ballShapeMode == 3)   
-    generateHyperbolicImage();
+    generateSquareBlackImage();
 }
 
 void generateCircleImage(){
@@ -355,24 +355,26 @@ void generateCircleImage(){
   
    
 void generateSquareImage(){
-  ballImage = createImage(radius*2,radius*2,ARGB);
-  color thisColor = color(MXColor2);
-  int tAlpha;
+ ballImage = createImage(radius*2,radius*2,ARGB);
+ color thisColor = color(MXColor2);
+  /// color thisColor = color(0,0,0,0);
   float delta = 0;
     for(int x= 0; x<=radius; x++)
       for(int y= x; y<=radius; y++){
         delta = x;
-     
-        tAlpha = 255*(int)(1.0-delta/(radius));
-        thisColor = color(MXColor2, (int)tAlpha); 
-        ballImage.set(x,y,thisColor);
-        ballImage.set(y,x,thisColor);
-        ballImage.set(2*radius-x,y,thisColor);
-        ballImage.set(y,2*radius-x,thisColor);
-        ballImage.set(2*radius-x,2*radius-y,thisColor);
-        ballImage.set(2*radius-y,2*radius-x,thisColor);
-        ballImage.set(x,2*radius-y,thisColor);
-        ballImage.set(2*radius-y,x,thisColor);
+
+        /// thisColor = color(0,0,0, 255*((int)(delta/(radius)*(nSteps))+1)/(nSteps));
+        // float tAlpha = 255*(delta/(radius)*(nSteps))+1/(nSteps);
+        // thisColor = color(thisColor, 255*((int)(delta/(radius)*(nSteps))+1)/(nSteps));
+        int dColor = color(thisColor);
+        ballImage.set(x,y,dColor);
+        ballImage.set(y,x,dColor);
+        ballImage.set(2*radius-x,y,dColor);
+        ballImage.set(y,2*radius-x,dColor);
+        ballImage.set(2*radius-x,2*radius-y,dColor);
+        ballImage.set(2*radius-y,2*radius-x,dColor);
+        ballImage.set(x,2*radius-y,dColor);
+        ballImage.set(2*radius-y,x,dColor);
       }
 }
  
@@ -406,6 +408,42 @@ void generateRingImage(){
         }
       }
 } 
+void generateSquareBlackImage(){
+   ballImage = createImage(radius*2,radius*2,ARGB);
+ color thisColor = color(MXColor2);
+  /// color thisColor = color(0,0,0,0);
+  float delta = 0;
+    for(int x= 0; x<=radius; x++)
+      for(int y= x; y<=radius; y++){
+        delta = x;
+        /*
+        if(renderDiscretely){
+          if(invertAlpha)
+            thisColor = color(0,0,0, 255*(nSteps-1-(int)(delta/(radius)*(nSteps)))/(nSteps-1));
+          else
+            thisColor = color(0,0,0, 255*((int)(delta/(radius)*(nSteps))+1)/(nSteps));
+        }
+        else{
+          if(invertAlpha)
+            thisColor = color(0,0,0, 255*(1.0-delta/(radius)));
+          else
+            thisColor = color(0,0,0,255*(delta/(radius)));
+        }
+        */
+        /// thisColor = color(0,0,0, 255*((int)(delta/(radius)*(nSteps))+1)/(nSteps));
+        float tAlpha = 255*(delta/(radius)*(nSteps))+1/(nSteps);
+        // thisColor = color(thisColor, 255*((int)(delta/(radius)*(nSteps))+1)/(nSteps));
+        int dColor = color(thisColor, tAlpha);
+        ballImage.set(x,y,dColor);
+        ballImage.set(y,x,dColor);
+        ballImage.set(2*radius-x,y,dColor);
+        ballImage.set(y,2*radius-x,dColor);
+        ballImage.set(2*radius-x,2*radius-y,dColor);
+        ballImage.set(2*radius-y,2*radius-x,dColor);
+        ballImage.set(x,2*radius-y,dColor);
+        ballImage.set(2*radius-y,x,dColor);
+      }
+}
    
 
 void generateHyperbolicImage(){

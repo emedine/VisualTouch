@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C200660B174B1B3700E8D494 /* Default-Landscape@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C200660A174B1B3700E8D494 /* Default-Landscape@2x~ipad.png */; };
+		C200660E174B1BCF00E8D494 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = C200660D174B1BCF00E8D494 /* Default-Landscape~ipad.png */; };
+		C2006610174B1CC700E8D494 /* visTouchThumb72.png in Resources */ = {isa = PBXBuildFile; fileRef = C200660F174B1CC700E8D494 /* visTouchThumb72.png */; };
+		C2006612174B1D0D00E8D494 /* visTouchThumb144.png in Resources */ = {isa = PBXBuildFile; fileRef = C2006611174B1D0D00E8D494 /* visTouchThumb144.png */; };
 		C20ED3AC16AEA1490046571D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C20ED3AB16AEA1490046571D /* Foundation.framework */; };
 		C20ED3AE16AEA1490046571D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C20ED3AD16AEA1490046571D /* UIKit.framework */; };
 		C20ED3B016AEA1490046571D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C20ED3AF16AEA1490046571D /* CoreGraphics.framework */; };
@@ -43,6 +47,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C200660A174B1B3700E8D494 /* Default-Landscape@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x~ipad.png"; sourceTree = "<group>"; };
+		C200660D174B1BCF00E8D494 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		C200660F174B1CC700E8D494 /* visTouchThumb72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visTouchThumb72.png; sourceTree = "<group>"; };
+		C2006611174B1D0D00E8D494 /* visTouchThumb144.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visTouchThumb144.png; sourceTree = "<group>"; };
 		C20ED3A716AEA1490046571D /* VisualTouchDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VisualTouchDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C20ED3AB16AEA1490046571D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C20ED3AD16AEA1490046571D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -119,6 +127,10 @@
 		C20ED39916AEA1490046571D = {
 			isa = PBXGroup;
 			children = (
+				C2006611174B1D0D00E8D494 /* visTouchThumb144.png */,
+				C200660F174B1CC700E8D494 /* visTouchThumb72.png */,
+				C200660D174B1BCF00E8D494 /* Default-Landscape~ipad.png */,
+				C200660A174B1B3700E8D494 /* Default-Landscape@2x~ipad.png */,
 				C276FF4616AFDE53002030A2 /* Default-568h@2x.png */,
 				C20ED40316AEA2690046571D /* www */,
 				C20ED3C516AEA1490046571D /* VisualTouchDemo */,
@@ -338,6 +350,10 @@
 				C20ED3FD16AEA1490046571D /* verify.sh in Resources */,
 				C20ED40416AEA2690046571D /* www in Resources */,
 				C276FF4716AFDE53002030A2 /* Default-568h@2x.png in Resources */,
+				C200660B174B1B3700E8D494 /* Default-Landscape@2x~ipad.png in Resources */,
+				C200660E174B1BCF00E8D494 /* Default-Landscape~ipad.png in Resources */,
+				C2006610174B1CC700E8D494 /* visTouchThumb72.png in Resources */,
+				C2006612174B1D0D00E8D494 /* visTouchThumb144.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,7 +465,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -474,7 +490,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -494,6 +510,7 @@
 					"CORDOVA_FRAMEWORK=1",
 				);
 				INFOPLIST_FILE = "VisualTouchDemo/VisualTouchDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					UIKit,
@@ -524,6 +541,7 @@
 					"CORDOVA_FRAMEWORK=1",
 				);
 				INFOPLIST_FILE = "VisualTouchDemo/VisualTouchDemo-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					UIKit,

@@ -88,9 +88,10 @@ public class vSlider
       }
    }
     strokeWeight (2);    
-    fill(c,Opacity);
-    stroke(c,Opacity);
-    stroke(c,Opacity);
+    int tOpac = Opacity - 75;
+    fill(c,tOpac);
+    stroke(c,tOpac);
+    stroke(c,tOpac);
     beginShape();
     vertex(sliderX + sWidth - sWidth/4, sliderY-sWidth/4); 
     vertex(sliderX + sWidth, sliderY-sWidth/4);
@@ -99,7 +100,7 @@ public class vSlider
     
     beginShape();    
     if (locked) {
-      fill(c,Opacity);
+      fill(c,tOpac);
       stroke(c,Opacity); 
       
       sliderPosition = mouseY;
@@ -112,8 +113,8 @@ public class vSlider
         }
       
       sliderValue = map(sliderPosition, sliderY, sliderY + sHeight, 255, 0); 
-    }else {
-          fill(c,Opacity);
+        }else {
+          fill(c,tOpac);
           stroke(c,Opacity); 
         } 
     vertex(sliderX, sliderPosition-sWidth/4);
@@ -123,14 +124,14 @@ public class vSlider
     vertex(sliderX , sliderY + sHeight);  
     endShape(CLOSE);  
 
-    fill(c,Opacity);
+    // fill(c,Opacity);
     // text(theLabel + " : " + int(sliderValue), sliderX +5, sliderY + sHeight-1);     
-    text(theLabel, sliderX +5, sliderY + sHeight-1);     
+    // text(theLabel, sliderX +5, sliderY + sHeight-1);     
   }
 }
 
 ///////////////////////////////////
-//////////// TOGLLE BUTTON ///////////
+//////////// TOGTTON ///////////
 ///////////////////////////////////
 
 public class button{

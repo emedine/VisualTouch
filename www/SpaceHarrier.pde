@@ -3,6 +3,7 @@ class SpaceHarrier{
   int tSpacing = 10;
   int curX = 0;
   int curY = 0;
+  int interfaceThreshold = 300; /// space below which the touch interaface doesn't work
   
   int rectW = 1024;
   int rectH = 1;
@@ -11,9 +12,9 @@ class SpaceHarrier{
   
   int spawnPoint = 100;
   // int totalWidth = 600;
+  float rotation = 0;
   
-  
-  boolean isLines = true;
+  boolean isLines = false;
   
   LineClass tLine;
   
@@ -43,19 +44,27 @@ class SpaceHarrier{
   }
   
   void display(){
-     spawnPoint = mouseY - 300;
+     
      // background(MXColor1);
-     float rotation = (float)map(mouseX, 0, tWidth, -25,25);
+     
+     if(mouseY < tHeight-interfaceThreshold){
+       rotation = (float)map(mouseX, 0, tWidth, -25,25);
+       spawnPoint = mouseY - 300;
+     }
      
      lineSpeed = (int)map(speedSlider.sliderValue, 0,100,0,20);
-     
-     if(heightSlider.sliderValue > 50){
+     int lineCheck = (int)map(heightSlider.sliderValue, 0,100,0,20);
+     //*
+     if(lineCheck < 10){
+       // println("HAS LINES");
        isLines = true;
        
      } else {
+       // println("NO LINES");
        isLines = false;
        
      }
+     //*/
      if(!isLines){
        fill(MXColor1);
        noStroke();
@@ -79,7 +88,12 @@ class SpaceHarrier{
         
         if(isLines){
           tl.hasLines = true;
+        } else {
+           tl.hasLines = false;
+          
         }
+        
+        
         tl.DZ += tl.DDZ;
         tl.Z += cos(tl.DZ);
         tl.display();
@@ -107,8 +121,12 @@ class SpaceHarrier{
         // tLine.posY = curY;
         LineClass tl = SkyLines.get(j);
         tl.DDZ = lineSpeed;
+        
         if(isLines){
           tl.hasLines = true;
+        } else {
+           tl.hasLines = false;
+          
         }
         
         tl.DZ -= tl.DDZ;
@@ -138,7 +156,7 @@ class LineClass{
   float posX;
   float posY;
   boolean isSky;
-  boolean hasLines = false;
+  boolean hasLines;
   
   int lineSpeed = 10;
   int DDZ = lineSpeed;
@@ -183,7 +201,7 @@ class LineClass{
        //// else is not sky
      } else {
        if(!hasLines){
-         fill(MXColor1);
+         fill(MXColor2);
          noStroke();
        } else {
          stroke(MXColor2);

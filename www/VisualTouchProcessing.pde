@@ -1,4 +1,4 @@
-int visID = 4;
+int visID = 0;
 String visType;
 
 int tWidth = 1024;
@@ -17,8 +17,6 @@ ColorSeeker theSwarm;
 Rorschach theRorshack;
 /// SpaceHarrier
 SpaceHarrier tSpaceHarrier;
-///// bulls eye
-BullsEye tBullsEye;
 ////// SPINNING BOXES
 /*
 float depth = 400;
@@ -91,17 +89,20 @@ void setup(){
     /// lines = new ArrayList();
     movers = new ArrayList();
     /// theBoxes = new RotatingBoxes();
-    theRorshack = new Rorschach();
-    theRorshack.generateBalls();
+    
+    // generate attractor
+    a = new Attractor(gravWeight);
+
     theSwarm = new ColorSeeker();
     theSwarm.init(); 
     tSpaceHarrier = new SpaceHarrier();
-    tBullsEye = new BullsEye();
     
+    theRorshack = new Rorschach();
+    theRorshack.generateBalls();
+
     spawnMovers();
     spawnSines();
-    // generate attractor
-    a = new Attractor(gravWeight);
+
 
     /// interfaces
     VisNames = new ArrayList();
@@ -126,11 +127,11 @@ void setup(){
     
     ///////////  do sliders /////////////// 
     //////////  float sliderX, float sliderY, float sWidth, float sHeight, int colorPreset,float sliderValu
-    spawnSlider = new vSlider(sliderPosX, sliderPosY, sliderWidths, sliderHeights, color(255,0,100), 255, "Number");
-    gravitySlider = new vSlider(sliderPosX + (sliderWidths*1) + tMargin, sliderPosY, sliderWidths, sliderHeights, UITrim, 255,"Gravity");
-    sizeSlider = new vSlider(sliderPosX + (sliderWidths*2) + tMargin*2, sliderPosY, sliderWidths, sliderHeights, UITrim, 255,"Size");
-    speedSlider = new vSlider(sliderPosX +  (sliderWidths*3) + tMargin*3, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Speed");
-    heightSlider = new vSlider(sliderPosX +  (sliderWidths*4) + tMargin*4, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Height");
+    spawnSlider = new vSlider(sliderPosX + tMargin, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Number");
+    gravitySlider = new vSlider(sliderPosX + (sliderWidths*1) + tMargin*2, sliderPosY, sliderWidths, sliderHeights, UITrim, 255,"Gravity");
+    sizeSlider = new vSlider(sliderPosX + (sliderWidths*2) + tMargin*3, sliderPosY, sliderWidths, sliderHeights, UITrim, 255,"Size");
+    speedSlider = new vSlider(sliderPosX +  (sliderWidths*3) + tMargin*4, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Speed");
+    heightSlider = new vSlider(sliderPosX +  (sliderWidths*4) + tMargin*5, sliderPosY, sliderWidths, sliderHeights, UITrim, 255, "Height");
     
     Sliders.add(spawnSlider);
     Sliders.add(gravitySlider);
@@ -175,7 +176,15 @@ void draw(){
 }
 
 void drawInterface(){
-  for(int k=0; k<Buttons.size(); k++){
+
+  
+  for(int j=0; j<Wheels.size(); j++){
+    wheelUI w = Wheels.get(j);
+    /// s.checkOver();
+    w.display();
+  }
+  
+    for(int k=0; k<Buttons.size(); k++){
     button b = Buttons.get(k);
     /// s.checkOver();
     b.display();
@@ -184,12 +193,6 @@ void drawInterface(){
     vSlider s = Sliders.get(i);
     /// s.checkOver();
     s.display();
-  }
-  
-  for(int j=0; j<Wheels.size(); j++){
-    wheelUI w = Wheels.get(j);
-    /// s.checkOver();
-    w.display();
   }
 }
 
@@ -302,7 +305,7 @@ void changeSineHeight(float theH){
     } 
     
    if(visType == "Rorchach"){
-       theRorshack.movementMode = (int)map(theH, 0, sliderHeights, 0, 6);
+       theRorshack.movementMode = (int)map(theH, 0, sliderHeights, 0, 3);
        
    }
 }
@@ -314,7 +317,7 @@ void changeSineSpeed(float theS){
     }
     
     if(visType == "Rorchach"){
-       theRorshack.ballShapeMode = (int)map(theS, 0, sliderHeights, 0, 3);
+       theRorshack.ballShapeMode = (int)map(theS, sliderHeights, 0, 0, 4);
        
    }
    

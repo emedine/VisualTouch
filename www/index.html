@@ -28,13 +28,13 @@
     <script type="text/javascript">
         
 	// If you want to prevent dragging, uncomment this section
-	/*
+	//*
 	function preventBehavior(e) 
 	{ 
       e.preventDefault(); 
     };
 	document.addEventListener("touchmove", preventBehavior, false);
-	*/
+	//*/
 	
 	/* If you are supporting your own protocol, the var invokeString will contain any arguments to the app launch.
 	see http://iphonedevelopertips.com/cocoa/launching-your-own-application-via-a-custom-url-scheme.html
@@ -47,9 +47,12 @@
 	*/
 	
 	function onBodyLoad()
-	{		
+	{
+        
+        
 		document.addEventListener("deviceready", onDeviceReady, false);
         consoloe.log("device ready");
+        
 	}
 	
 	/* When this function is called, Cordova has been initialized and is ready to roll */
@@ -60,63 +63,100 @@
 	{
 		// do your thing!
 		/// navigator.notification.alert("Hello LPM")
+        
+        console.log("ADDING PROCESSING");
+                
 	}
-        
+        var theData; // = new Lawnchair('settings'); // save object definition
         var processingInstance;
+        /*
+        var processingClasses = "VisualTouchProcessing.pde Attractor.pde Mover.pde SineWave.pde UI_classes.pde Rorschach.pde ColorSeeker.pde SpaceHarrier.pde BullsEye.pde";
+         */
         
-        
+        //// LOAD PROCESSING PDE FILES ///////
+        function addProcessingData(){
+                        //
+            console.log("ADDING PROCESSING");
+            var cvs = document.getElementById('sketch');
+            var item = 'VisualTouchProcessing';
+            var procItemArray=["VisualTouchProcessing.pde","Mover.pde","SineWave.pde","UI_classes.pde","Rorschach.pde","ColorSeeker.pde","SpaceHarrier.pde", "Attractor.pde"];
+            // Processing.loadSketchFromSources('sketch', [item + '.pde']);
+            Processing.loadSketchFromSources('sketch', [item + '.pde']);
+            Processing.loadSketchFromSources('sketch', procItemArray);
 
+        }
+        ////// SAVE SETTINGS ////////////////
         
-        //// COLOR CHANGE FUNCTIONS ///////////
-        ///*
-        function doTrimColor(hexColor){
-            // console.log("INIT BG COLOR CHANGE:  " + hexColor);
-            Processing.getInstanceById('sketch').changeTrimColor(hexColor);
-            
-            bgColorConfig = hexColor;
-            
-        }
-        function doBackgroundColor(hexColor){
-            // console.log("INIT BG COLOR CHANGE:  " + hexColor);
-            Processing.getInstanceById('sketch').changeBgColor(hexColor);
-            
-            bgColorConfig = hexColor;
-            
-        }
-         //*/
         
-        /// SLIDER FUNCTIONS //////////
-        
-        function updateSpawns(newValue){
-            console.log("UPDATING SLIDER: " + newValue);
-            processingInstance = Processing.getInstanceById('sketch');
-            processingInstance.changeSpawns(newValue);
+        function doSave() {
+            // Retrieve the values from the form elements
+            // theUsername = document.getElementById('Username').value;
+            // thePassword = document.getElementById('Password').value;
+            // theAge = document.getElementById('Age').value;
             
-            // animSpeedConfig = newValue;
+            console.log("Saving: " + theData);
+            // Construct an object with them - the key value is the primary key for the record.
+            var theSettings = {key:"settings",
+                BGColor:bgColorConfig,
+                FontColor:fontColorConfig,
+                BgroundPic:bgroundPathConfig,
+                AnimType:animTypeConfig,
+                AnimSpeed:animSpeedConfig,
+                ShowPic:showPicConfig
+            };
+            
+            // Send them to the data store
+            theData.save(theSettings);
+            
+            // alert("Saved!");
+            console.log("Set object value: " + theSettings );
+        }
+        function deleteSave() {
+            theData.remove('settings');
+            console.log("Set object value to null.");
+            
+            
+        }
+        function retrieveSave() {
+            // Call the get function, giving it the key we used to save with and a return function to populate the form with the values of the object
+            theData.get("settings",
+                        function(theSettings) {
+                        // Test we actually got a settings object
+                        if (theSettings) {
+                        // We did, so apply the data to the animation
+                        bgColorConfig = theSettings.BGColor;
+                        fontColorConfig = theSettings.FontColor;
+                        bgroundPathConfig = theSettings.BgroundPic;
+                        animTypeConfig = theSettings.AnimType;
+                        animSpeedConfig = theSettings.AnimSpeed;
+                        showPicConfig = theSettings.ShowPic;
+                        
+                        } else {
+                        console.log("No settings found!");
+                        }
+                        } // function(theSettings)
+                        );
+            console.log("Recalled!");
+            //
+            /// save to the processing skech
+            processingInstance = Processing.getInstanceById('tweets');
+            processingInstance.setBackgroundImage(bgroundPathConfig);
+            processingInstance.changeBGColor(bgColorConfig);
+            processingInstance.changeFontColor(fontColorConfig);
+            // processingInstance.changeAnimationType(animTypeConfig);
+            processingInstance.changeAnimSpeed(animSpeedConfig);
+            
+            changeAnim(animTypeConfig);
+            
+            console.log("UPDATED");
         }
         
-        function updateGravity(theGrav){
-            console.log("SLIDER: " + theGrav);
-            processingInstance = Processing.getInstanceById('sketch');
-            processingInstance.changeGravity(theGrav);  
-            
-        }
-        function updateSineHeight(theH){
-            console.log("height SLIDER: " + theH);
-            processingInstance = Processing.getInstanceById('sketch');
-            processingInstance.changeSineHeight(theH);
-            
-            
-        }
-        function updateSineSpeed(theS){
-            console.log("Speed SLIDER: " + theS);
-            processingInstance = Processing.getInstanceById('sketch');
-            processingInstance.changeSineSpeed(theS);
-            
-            
-        }
-        
+        //// END SAVE SETTINGS
+               
+        //////////////////////////////
         // called from the canvas
+        // not used //////////////////
+        ///////////////////////////////
         function showOverlay(theID){
             theOverlay = document.getElementById("interface");
             theOverlay.style.display = "block";
@@ -138,50 +178,17 @@
             processingInstance.overlayOff();
         }
         
-        
-    
+        //// init processing data load ///////
+        addProcessingData();
     </script>
-
+ 
+    <!-- CSS STYLE -->
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <!-- color picker style -->
+    <link rel="stylesheet" href="css/jquery.minicolors.css" type="text/css" />
         
-        
-    <!-- COLOR PICKER CODE !-->
-        
-        <script type="text/javascript" charset="utf-8">
-
-            $(document).ready( function() {
-                              
-            var consoleTimeout;
-            $("#cp1").minicolors({
-                                                    
-                    textfield: $(this).hasClass('no-textfield'),
-                                    inline: true,               
-                                    change: function(hex, opacity) {
-                                        doTrimColor(hex);
-                                        }
-                                    });
-            $("#cp2").minicolors({
-                                                                
-                     textfield: $(this).hasClass('no-textfield'),
-                                     inline: true,
-                                     change: function(hex, opacity) {
-                                        doBackgroundColor(hex);
-                                        }
-                                     });
-            
-            });
-
-        </script>
-        
-        <!-- end color picker code -->
-        
-        
-        <!-- CSS STYLE -->
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-        <!-- color picker style -->
-        <link rel="stylesheet" href="css/jquery.minicolors.css" type="text/css" />
-        
-        <!-- jquery mobile css !-->
-        <link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.2.0.css" />
+    <!-- jquery mobile css !-->
+    <link rel="stylesheet"  href="css/themes/default/jquery.mobile-1.2.0.css" />
             
                 
   </head>
@@ -190,419 +197,34 @@
       
 <div id="container">
         
-    <div id="content">
+    <div class="content">
         
-    <!-- start processing code
-    <script type="text/processing">
-	
-        int tWidth = 1024;
-        int tHeight = 768;
-        int totalMovers = 5;
-        int totalSines = 2;
-        
-        //
-        color trimColor = color(255);
-        color bgColor = color(0);
-        
-        float gravWeight = -5;
-        
-
-        ArrayList<Mover> movers;
-        ArrayList<TLine> lines;
-        ArrayList<SineWave> tsines;
-        
-        tsines = new ArrayList();
-        lines = new ArrayList();
-        movers = new ArrayList();
-        
-
-        Attractor a;
-        //
-        PVector wind = new PVector(0.01,0);
-        PVector gravity = new PVector(0,0.01);
-        //
-        
-        boolean interfaceShowing = true;
-        
-        void setup(){
-            size(tWidth, tHeight);
-            colorMode(RGB);
-            smooth();
-            
-            spawnMovers();
-            spawnSines();
-            // spawnLines();
-            // generate attractor
-            console.log("INIT");
-            
-            a = new Attractor(gravWeight);
-        }
-        
-        void draw(){
-            /// do bg color
-            fill(0,0,0,17);
-            strokeWeight(0);
-            noStroke();
-            rect(0,0,tWidth,tHeight);
-            drawMovers();
-            drawSines();
-            // drawLines();
-            /// shows the "attractor"
-            a.display();
-        }
-        
-        
-        ////// INITIAL PARAMS ///////////
-        
-        void spawnSines(){
-            for (int i=0; i< totalSines; i++){
-                tsines.add(new SineWave());
-            }
-            
-        }
-        void spawnLines(){
-            for (int i=0; i< totalMovers; i++){
-                lines.add(new TLine(10, random(0.1,5),500,i * 10));  
-            } 
-        }
-        /// spawn movers
-        void spawnMovers(){
-            // generate movers
-            movers.clear();
-            for (int i=0; i< totalMovers; i++){
-                console.log("ADDING MOVER: " + i);
-                // movers[i] = new Mover(random(0.1,5),0,0);
-                
-                movers.add(new Mover(random(0.1,5),0,0));
-                
-            }
-            
-        }
-        
-        /////// DRAW OBJEXTS ///////////
-        void drawSines(){
-            for (int i=0; i< tsines.size(); i++){
-                SineWave dsine = tsines.get(i);
-                dsine.display();
-            }
-            
-        }
-        void drawMovers(){
-            
-            for (int i=0; i< movers.size(); i++){
-                Mover dMover = movers.get(i);
-                /// movers[i].applyForce(gravity);
-                PVector f = a.attract(dMover);
-                dMover.applyForce(f);
-                dMover.update();
-                dMover.checkEdges();
-                dMover.display();
-            }
-        }
-        void drawLines(){
-            
-            for (int i=0; i< lines.size(); i++){
-                TLine tline = lines.get(i);
-                /// movers[i].applyForce(gravity);
-                tline.display();
-            }
-        }
-
-
-        //// MOVEMENT PARAMS
-        void changeGravity(theGrav){
-            
-            gravWeight = map(theGrav, -200,200,-10,10);
-            a.G = gravWeight;
-            console.log("GRAV: " + theGrav + " NEW: " + gravWeight);
-        }
-        // SPAWN PARAMS
-        void changeSpawns(theValue){
-            totalMovers = int(map(theValue, 1, 400, 1, 20));
-            spawnMovers();
-            console.log(totalMovers);
-            
-        }
-        
-        void changeSineHeight(theH){
-            for (int i=0; i< tsines.size(); i++){
-                SineWave dsine = tsines.get(i);
-                dsine.amplitude = map(theH, -200, 200, 0, 250);
-               
-            }
-            
-            
-        }
-        void changeSineSpeed(theS){
-            for (int i=0; i< tsines.size(); i++){
-                SineWave dsine = tsines.get(i);
-                //// dsine.period = map(theS, -200,200, 0, 800); ///this changes the spacing
-                dsine.theta = map(theS, -200,200, 0.00, .99);
-            }
-            
-            
-        }
-        
-        //// DISPLAY PARAMS
-        void changeTrimColor(int theColor){
-            //// change font color
-            string dColor = theColor.substring(1);
-            color newColor = unhex("FF" + dColor);
-            trimColor = newColor;
-        }
-        void changeBgColor(int theColor){
-            //// change font color
-            string dColor = theColor.substring(1);
-            color newColor = unhex("FF" + dColor);
-            bgColor = newColor;
-        }
-        
-        ////////////////
-        ///// INTERFACE PARAMS ///////////
-        /////////////////////////////
-        void overlayOn(){
-            /// show overlay
-            window.showOverlay(); /// calls to the interface div in the htmls
-            interfaceShowing = true; ///
-        }
-        void overlayOff(){
-            interfaceShowing = false;
-        }
-        void mousePressed() {
-            // background(0);
-            // tweets.clear();
-            // words.clear();
-            overlayOn();
-        }
-        
-        
-        ///////////////////////////////////////
-        /////// ATTRACTOR OBJECT CLASS //////////
-        ///////////////////////////////////////
-        class Attractor{
-            float mass;
-            PVector location;
-            float G;
-            
-            Attractor(float theG){
-                location = new PVector(width/2, height/2);
-                mass = 20;
-                G = theG;
-            }
-            
-            // returns it attraction
-            PVector attract(Mover m){
-                PVector force = PVector.sub(location, m.location);
-                float distance = force.mag();
-                distance = constrain(distance, 5.0, 25.0);
-                
-                force.normalize();
-                float strength = (G * mass * m.mass) / (distance * distance);
-                force.mult(strength);
-                return force;
-            }  
-            
-            //
-            void display(){
-                fill(0,0,0,0);
-                strokeWeight(1);
-                stroke(color(trimColor, 65),200);
-                ellipse(location.x, location.y, mass, mass);
-            }
-            
-        }
-        
-        
-        //// end attractor class
-        
-        ///////////////////////////////////////
-        //////// SINE WAVE OBJECT CLASS /////////
-        ///////////////////////////////////////
-        
-        class SineWave{
-            ///*
-             int xspacing = 16;   // How far apart should each horizontal location be spaced
-             int w;              // Width of entire wave
-             
-             float theta = 0.02;
-             float thetaBase = 0.0; // Start angle at 0
-             float amplitude = 125.0;  // Height of wave
-             float period = 800.0;  // How many pixels before the wave repeats
-             float dx;  // Value for incrementing X, a function of period and xspacing
-             float[] yvalues;  // Using an array to store height values for the wave
-             //*/
-            
-            SineWave(){
-                
-                 w = 1024+16;
-                 dx = (TWO_PI / period) * xspacing;
-                 yvalues = new float[w/xspacing];
-                 
-            }
-            
-            void update(float tAmp, float tPer){
-                amplitude = map(tAmp, -200, 200, 0, 250);
-                period = map(tPer, -200,200, 0, 1200);
-                
-                
-            }
-            
-            
-            void display() {
-              dx = (TWO_PI / period) * xspacing;
-              yvalues = new float[w/xspacing];
-                
-
-             calcWave();
-             renderWave();
-             }
-             
-             void calcWave() {
-             // Increment theta (try different values for 'angular velocity' here
-             // thetaBase += 0.02;
-             thetaBase += theta;
-             // For every x value, calculate a y value with sine function
-             float x = thetaBase;
-             for (int i = 0; i < yvalues.length; i++) {
-             yvalues[i] = sin(x)*amplitude;
-             x+=dx;
-             }
-             }
-             
-             void renderWave() {
-             fill(0,0,0,0);
-             strokeWeight(1);
-             stroke(bgColor,200);
-             // A simple way to draw the wave with an ellipse at each location
-             for (int x = 0; x < yvalues.length; x++) {
-             ellipse(x*xspacing, height/2+yvalues[x], 16, 16);
-             }
-             }
-            
-            
-        }
-
-        ///////////////////////////////////////
-        /////// LINE OBJECT CLASS //////////
-        ///////////////////////////////////////
-        class TLine{
-            float lWidth;
-            float lHeight;
-            float posX;
-            float posY;
-            
-            TLine(float lw, float lh, float px, float py){
-                lWidth = lw;
-                lHeight = lh;
-                posX = px;
-                posY = py;
-                
-            }
-            void initLine(){
-                
-                
-            }
-            void display(){
-                fill(0);
-                strokeWeight(1);
-                stroke(bgColor,200);
-                rect(posX, posY, lWidth, lHeight);
-                
-                
-            }
-            // end class
-        }
-        
-        //// end line class
-        
-        ///////////////////////////////////////
-        /////// MOVER OBJECT CLASS //////////
-        ///////////////////////////////////////
-        class Mover{
-            PVector location;
-            PVector velocity;
-            PVector acceleration;
-            PVector wind;
-            PVector gravity;
-            
-            float mass;
-            int ballSize = 16;
-            
-            /// the mass, the x, the y);
-            Mover(float m, float x, float y){
-                mass = m;
-                location = new PVector(random(width), random(height));
-                velocity = new PVector(random(-2,2),random(-2,2));
-                acceleration = new PVector(0.1,0.2);
-                
-            }
-            
-            /// force
-            void applyForce(PVector force){
-                PVector f = PVector.div(force,mass);
-                acceleration.add(f);
-                
-            }
-            
-            void update(){
-                velocity.add(acceleration);
-                location.add(velocity);
-                acceleration.mult(0);
-            }
-            
-            
-            
-            void checkEdges(){
-                if(location.x>width){
-                    location.x = width;
-                    velocity.x *= -1;
-                } else if (location.x<0){
-                    velocity.x *= -1;
-                    location.x = 0;
-                }
-                
-                if(location.y>height){
-                    velocity.y *= -1;
-                    location.y = height;
-                } else if (location.y<0){
-                    location.y = 0;
-                    velocity.y *=-1;
-                }
-                
-            }
-            void display(){
-                stroke(trimColor,200);
-                strokeWeight(4);
-                fill(0,0,0,165);
-                
-                ellipse(location.x, location.y, mass*ballSize, mass*ballSize);
-                
-            }
-            
-        }
-        /// end mover class
-        
-        
-      </script>
+    </div>
+    <!--
+     <script>
      
-    
-      <canvas id="sketch">
-      </canvas>
+     var lines = '<canvas id="sketch" data-processing-sources =';
+     // lines += processingClasses;
+     lines += 'Ball.pde';
+     lines += '></canvas>';
+     document.write(lines);
      
+     </script>
      -->
-        <canvas data-processing-sources="VisualTouchProcessing.pde Attractor.pde Mover.pde SineWave.pde UI_classes.pde Rorschach.pde ColorSeeker.pde SpaceHarrier.pde"></canvas>
-        </div>
-        
-         <!-- end content class -->
-
-
-      
+    <!--
+     <canvas id="sketch" data-processing-sources = "VisualTouchProcessing.pde Attractor.pde Mover.pde SineWave.pde UI_classes.pde Rorschach.pde ColorSeeker.pde SpaceHarrier.pde BullsEye.pde"></canvas>
+     -->
 
     
+    
+         <!-- end content class -->
+    <canvas id="sketch" ></canvas>
    <!-- end container class -->
    </div>
     
   </body>
+
 </html>
+
 
 
